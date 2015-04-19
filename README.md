@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/kimmobrunfeldt/chokidar-cli.svg?branch=master)](https://travis-ci.org/kimmobrunfeldt/chokidar-cli)
 
-Ultra-fast cross-platform command line utility to watch file system changes.
+Fast cross-platform command line utility to watch file system changes.
 
 The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar), which is one of the best watch utilities for Node. Chokidar is battle-tested:
 
