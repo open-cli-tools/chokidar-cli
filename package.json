@@ -1,0 +1,42 @@
+{
+  "name": "chokidar-cli",
+  "description": "A neat wrapper around node.js fs.watch / fs.watchFile / fsevents.",
+  "version": "0.0.1",
+  "keywords": [
+    "fs",
+    "watch",
+    "watchFile",
+    "watcher",
+    "watching",
+    "file",
+    "fsevents",
+    "chokidar",
+    "cli",
+    "command",
+    "shell",
+    "bash"
+  ],
+  "bin": {
+    "watch": "./index.js"
+  },
+  "homepage": "https://github.com/kimmobrunfeldt/chokidar-cli",
+  "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com> (http://kimmobrunfeldt.github.io/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kimmobrunfeldt/chokidar-cli.git"
+  },
+  "bugs": {
+    "url": "http://github.com/kimmobrunfeldt/chokidar-cli/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "anymatch": "^1.1.0",
+    "bluebird": "^2.9.24",
+    "chokidar": "https://registry.npmjs.org/chokidar/-/chokidar-1.0.1.tgz",
+    "lodash": "^3.7.0",
+    "yargs": "^3.7.2"
+  }
+}
