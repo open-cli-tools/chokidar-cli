@@ -40,6 +40,7 @@
     "yargs": "^3.7.2"
   },
   "devDependencies": {
+    "commander": "^2.8.0",
     "mustache": "^2.0.0",
     "semver": "^4.3.3",
     "shelljs": "^0.4.0",
