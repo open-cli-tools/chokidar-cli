@@ -29,6 +29,12 @@ npm install -g chokidar-cli
 
 ## Usage
 
+Run `npm run build-js` whenever any .js file changes in the current work directory tree:
+
+```watch '**/*.js' 'npm run build-js'```
+
+Detailed help:
+
 ```
 Usage: watch <pattern> <command> [options]
 
