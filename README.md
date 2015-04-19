@@ -1,12 +1,17 @@
 # Chokidar CLI
 
-Ultra-fast cross-platform command line utility to watch file system changes.
+> Ultra-fast cross-platform command line utility to watch file system changes.
 
-The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar), which is one of the best watch utilities for Node.
-
-As Chokidar documentation says:
-
-> It is used in brunch, karma, PM2, browserify, webpack, BrowserSync, socketstream, derby, and many others. It has proven itself in production environments.
+The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar), which is one of the best watch utilities for Node. Chokidar is battle-tested and used in
+[brunch](http://brunch.io),
+[karma](http://karma-runner.github.io),
+[PM2](https://github.com/Unitech/PM2),
+[browserify](http://browserify.org/),
+[webpack](http://webpack.github.io/),
+[BrowserSync](http://www.browsersync.io/),
+[socketstream](http://www.socketstream.org),
+[derby](http://derbyjs.com/),
+and [many others](https://www.npmjs.org/browse/depended/chokidar/).
 
 ## Install
 
