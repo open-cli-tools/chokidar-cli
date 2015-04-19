@@ -84,8 +84,8 @@ function main() {
 }
 
 function getUserOpts(argv) {
-    argv.command = argv._[0];
-    argv.pattern = argv._[1];
+    argv.pattern = argv._[0];
+    argv.command = argv._[1];
     return argv;
 }
 
