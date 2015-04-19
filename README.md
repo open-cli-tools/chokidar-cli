@@ -36,16 +36,16 @@ npm install -g chokidar-cli
 
 **Run *npm run build-js* whenever any .js file changes in the current work directory tree**
 
-```watch '**/*.js' 'npm run build-js'```
+```chokidar '**/*.js' 'npm run build-js'```
 
 **Watching in network directories must use polling**
 
-```watch '**/*.less' 'npm run build-less' --polling```
+```chokidar '**/*.less' 'npm run build-less' --polling```
 
 **Detailed help**
 
 ```
-Usage: watch <pattern> <command> [options]
+Usage: chokidar <pattern> <command> [options]
 
 <pattern>:
 Glob pattern to specify files to be watched.
@@ -67,6 +67,8 @@ Options:
                           be surrounded with quotes to prevent shell globbing.
                           The whole relative or absolute path is tested, not
                           just filename
+  --initial               When set, command is initially run once
+                                                     [boolean]  [default: false]
   -p, --polling           Whether to use fs.watchFile(backed by polling)
                           instead of fs.watch. This might lead to high CPU
                           utilization. It is typically necessary to set this to
@@ -78,11 +80,13 @@ Options:
                           --polling is set                        [default: 100]
   --poll-interval-binary  Interval of file system polling for binary files.
                           Effective when --polling is set         [default: 300]
+  --verbose               When set, output is more verbose
+                                                     [boolean]  [default: false]
   -h, --help              Show help
   -v, --version           Show version number
 
 Examples:
-  watch "**/*.js" "npm run build-js"    build when any .js file changes
+  chokidar "**/*.js" "npm run build-js"    build when any .js file changes
 ```
 
 ## License
