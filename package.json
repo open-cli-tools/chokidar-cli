@@ -29,9 +29,6 @@
         "url": "http://github.com/kimmobrunfeldt/chokidar-cli/issues"
     },
     "license": "MIT",
-    "files": [
-        "index.js"
-    ],
     "dependencies": {
         "anymatch": "^1.1.0",
         "bluebird": "^2.9.24",
