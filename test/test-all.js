@@ -1,4 +1,4 @@
-// Test basic usage of cli. Contains a bit confusing setTimeouts
+// Test basic usage of cli. Contains confusing setTimeouts
 
 var fs = require('fs');
 var path = require('path');
@@ -7,21 +7,34 @@ var assert = require('assert');
 var utils = require('../utils');
 var run = utils.run;
 
-
-var DEBUG_TESTS = true;
+// If true, output of commands are shown
+var DEBUG_TESTS = false;
 
 // Arbitrary file which is created on detected changes
 // Used to determine that file changes were actually detected.
-var CHANGE_FILE = 'change';
+var CHANGE_FILE = 'dir/change';
+
+// Time to wait for different tasks
+var TIMEOUT_WATCH_READY = 1000;
+var TIMEOUT_CHANGE_DETECTED = 500;
 
 // Abs path to test directory
 var testDir = path.resolve(__dirname);
+process.chdir(path.join(testDir, '..'));
 
 describe('chokidar-cli', function() {
-    afterEach(function clean() {
+    this.timeout(5000);
+
+    afterEach(function clean(done) {
         if (changeFileExists()) {
             fs.unlinkSync(resolve(CHANGE_FILE));
         }
+
+        // Clear all changes in the test directory
+        run('git checkout HEAD dir', {cwd: testDir})
+        .then(function() {
+            done();
+        });
     })
 
     it('help should be succesful', function(done) {
@@ -47,27 +60,34 @@ describe('chokidar-cli', function() {
 
         // Use a file to detect that trigger command is actually run
         var touch = 'touch ' + CHANGE_FILE
-        run('node ../../index.js "**/*.less" "' + touch + '"', {
+        // No quotes needed in glob pattern because node process spawn
+        // does no globbing
+        run('node ../index.js "dir/**/*.less" "' + touch + '"', {
             pipe: DEBUG_TESTS,
-            cwd: './test/dir',
+            cwd: './test',
+            // Called after process is spawned
             callback: function(child) {
-                setTimeout(function() {
+                setTimeout(function killChild() {
+                    // Kill child after test case
                     child.kill();
                     killed = true;
-                }, 1000);
+                }, TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000);
             }
         })
-        .then(function(exitCode) {
+        .then(function childProcessExited(exitCode) {
             // Process should be killed after a timeout,
             // test if the process died unexpectedly before it
             assert(killed, 'process exited too quickly');
             done();
         });
 
-        fs.writeFileSync(resolve('dir/a.less'), 'content');
-        setTimeout(function() {
-            assert(changeFileExists(), 'change file should exist')
-        }, 800)
+        setTimeout(function afterWatchIsReady() {
+            fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
+
+            setTimeout(function() {
+                assert(changeFileExists(), 'change file should exist')
+            }, TIMEOUT_CHANGE_DETECTED)
+        }, TIMEOUT_WATCH_READY);
     });
 });
 

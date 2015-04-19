@@ -17,7 +17,7 @@
     "bash"
   ],
   "bin": {
-    "watch": "./index.js"
+    "chokidar": "./index.js"
   },
   "homepage": "https://github.com/kimmobrunfeldt/chokidar-cli",
   "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com> (http://kimmobrunfeldt.github.io/)",
@@ -37,6 +37,7 @@
     "bluebird": "^2.9.24",
     "chokidar": "https://registry.npmjs.org/chokidar/-/chokidar-1.0.1.tgz",
     "lodash": "^3.7.0",
+    "shell-quote": "^1.4.3",
     "yargs": "^3.7.2"
   },
   "devDependencies": {

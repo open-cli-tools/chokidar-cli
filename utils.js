@@ -1,6 +1,7 @@
 var childProcess = require('child_process');
 var _ = require('lodash');
 var Promise = require('bluebird');
+var shellQuote = require('shell-quote');
 
 function run(cmd, opts) {
     opts = _.merge({
@@ -16,7 +17,7 @@ function run(cmd, opts) {
     }, opts);
 
     var child;
-    var parts = cmd.split(' ');
+    var parts = shellQuote.parse(cmd);
     try {
         child = childProcess.spawn(_.head(parts), _.tail(parts), {
             cwd: opts.cwd
