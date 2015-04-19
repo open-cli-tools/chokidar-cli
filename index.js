@@ -4,6 +4,7 @@ var childProcess = require('child_process');
 var Promise = require('bluebird');
 var _ = require('lodash');
 var chokidar = require('chokidar');
+var utils = require('./utils');
 
 var defaultOpts = {
     debounce: 400,
@@ -123,29 +124,10 @@ function createChokidarOpts(opts) {
 }
 
 function run(cmd) {
-    var child;
-    var parts = cmd.split(' ');
-    try {
-        child = childProcess.spawn(_.head(parts), _.tail(parts));
-    } catch (e) {
-        return Promise.reject(e);
-    }
-
-    // TODO: Is there a chance of locking/waiting forever?
-    child.stdin.pipe(process.stdin);
-    child.stdout.pipe(process.stdout);
-    child.stderr.pipe(process.stderr);
-
-    return new Promise(function(resolve, reject) {
-        child.on('error', function(err) {
-            console.error('Error when executing', cmd);
-            console.error(err.stack);
-            reject(err);
-        });
-
-        child.on('close', function(exitCode) {
-            resolve(exitCode);
-        });
+    return utils.run(cmd)
+    .catch(function(err) {
+        console.error('Error when executing', cmd);
+        console.error(err.stack);
     });
 }
 
