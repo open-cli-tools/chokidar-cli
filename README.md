@@ -34,29 +34,52 @@ npm install -g chokidar-cli
 
 ## Usage
 
+By default `chokidar` streams changes for all patterns to stdout:
+
+```bash
+$ chokidar '**/.js' '**/*.less'
+change:test/dir/a.js
+change:test/dir/a.less
+add:test/b.js
+unlink:test/b.js
+```
+
+Each change is represented with format `event:relativepath`. Possible events: `add`, `unlink`, `addDir`, `unlinkDir`, `change`.
+
+**Output only relative paths on each change**
+
+```bash
+$ chokidar '**/.js' '**/*.less' | cut -d ':' -f 2-
+test/dir/a.js
+test/dir/a.less
+test/b.js
+test/b.js
+```
+
 **Run *npm run build-js* whenever any .js file changes in the current work directory tree**
 
-```chokidar '**/*.js' 'npm run build-js'```
+```chokidar '**/*.js' -c 'npm run build-js'```
 
 **Watching in network directories must use polling**
 
-```chokidar '**/*.less' 'npm run build-less' --polling```
+```chokidar '**/*.less' -c 'npm run build-less' --polling```
+
 
 **Detailed help**
 
 ```
-Usage: chokidar <pattern> <command> [options]
+Usage: chokidar <pattern> [<pattern>...] [options]
 
 <pattern>:
 Glob pattern to specify files to be watched.
-Needs to be surrounded with quotes to prevent shell globbing.
+Multiple patterns can be watched by separating patterns with spaces.
+To prevent shell globbing, write pattern inside quotes.
 Guide to globs: https://github.com/isaacs/node-glob#glob-primer
 
-<command>:
-Command to be executed when a change is detected.
-Needs to be surrounded with quotes when command contains spaces
 
 Options:
+  -c, --command           Command to run after each change. Needs to be
+                          surrounded with quotes when command contains spaces
   -d, --debounce          Debounce timeout in ms for executing command
                                                                   [default: 400]
   -s, --follow-symlinks   When not set, only the symlinks themselves will be
@@ -80,13 +103,15 @@ Options:
                           --polling is set                        [default: 100]
   --poll-interval-binary  Interval of file system polling for binary files.
                           Effective when --polling is set         [default: 300]
-  --verbose               When set, output is more verbose
+  --verbose               When set, output is more verbose and human readable.
                                                      [boolean]  [default: false]
   -h, --help              Show help
   -v, --version           Show version number
 
 Examples:
-  chokidar "**/*.js" "npm run build-js"    build when any .js file changes
+  chokidar "**/*.js" -c "npm run build-js"    build when any .js file changes
+  chokidar "**/*.js" "**/*.less"              output changes of .js and .less
+                                              files
 ```
 
 ## License

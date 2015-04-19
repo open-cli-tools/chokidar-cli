@@ -8,11 +8,11 @@ var utils = require('./utils');
 
 
 var EVENT_DESCRIPTIONS = {
-    add: 'Added file',
-    addDir: 'Added directory',
-    unlink: 'Removed file',
-    unlinkDir: 'Removed directory',
-    change: 'Changed file'
+    add: 'File added',
+    addDir: 'Directory added',
+    unlink: 'File removed',
+    unlinkDir: 'Directory removed',
+    change: 'File changed'
 };
 
 var defaultOpts = {
@@ -23,7 +23,8 @@ var defaultOpts = {
     pollInterval: 100,
     pollIntervalBinary: 300,
     verbose: false,
-    initial: false
+    initial: false,
+    command: null
 };
 
 var VERSION = 'chokidar-cli: ' + require('./package.json').version +
@@ -31,17 +32,22 @@ var VERSION = 'chokidar-cli: ' + require('./package.json').version +
 
 var argv = require('yargs')
     .usage(
-        'Usage: $0 <pattern> <command> [options]\n\n' +
+        'Usage: $0 <pattern> [<pattern>...] [options]\n\n' +
         '<pattern>:\n' +
         'Glob pattern to specify files to be watched.\n' +
-        'Needs to be surrounded with quotes to prevent shell globbing.\n' +
-        'Guide to globs: https://github.com/isaacs/node-glob#glob-primer\n\n' +
-        '<command>:\n' +
-        'Command to be executed when a change is detected.\n' +
-        'Needs to be surrounded with quotes when command contains spaces'
+        'Multiple patterns can be watched by separating patterns with spaces.\n' +
+        'To prevent shell globbing, write pattern inside quotes.\n' +
+        'Guide to globs: https://github.com/isaacs/node-glob#glob-primer\n'
     )
-    .example('$0 "**/*.js" "npm run build-js"', 'build when any .js file changes')
-    .demand(2)
+    .example('$0 "**/*.js" -c "npm run build-js"', 'build when any .js file changes')
+    .example('$0 "**/*.js" "**/*.less"', 'output changes of .js and .less files')
+    .demand(1)
+    .option('c', {
+        alias: 'command',
+        describe: 'Command to run after each change. ' +
+                  'Needs to be surrounded with quotes when command contains ' +
+                  'spaces'
+    })
     .option('d', {
         alias: 'debounce',
         default: defaultOpts.debounce,
@@ -91,7 +97,7 @@ var argv = require('yargs')
         type: 'number'
     })
     .option('verbose', {
-        describe: 'When set, output is more verbose',
+        describe: 'When set, output is more verbose and human readable.',
         default: defaultOpts.verbose,
         type: 'boolean'
     })
@@ -109,24 +115,29 @@ function main() {
 }
 
 function getUserOpts(argv) {
-    argv.pattern = argv._[0];
-    argv.command = argv._[1];
+    argv.patterns = argv._;
     return argv;
 }
 
 // Estimates spent working hours based on commit dates
 function startWatching(opts) {
     var chokidarOpts = createChokidarOpts(opts);
-    var watcher = chokidar.watch(opts.pattern, chokidarOpts);
+    var watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
     var debouncedRun = _.debounce(run, opts.debounce);
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
 
-        if (opts.verbose) console.log(description, path);
+        if (opts.verbose) {
+            console.error(description, path);
+        } else {
+            console.log(event + ':' + path);
+        }
 
         // TODO: commands might be still run concurrently
-        debouncedRun(opts.command);
+        if (opts.command) {
+            debouncedRun(opts.command);
+        }
     });
 
     watcher.on('error', function(error) {
@@ -134,8 +145,9 @@ function startWatching(opts) {
         console.error(error.stack);
     });
 
-    watcher.on('ready', function() {
-        console.log('Watching', '"' + opts.pattern + '" ..');
+    watcher.once('ready', function() {
+        var list = opts.patterns.join('", "');
+        console.error('Watching', '"' + list + '" ..');
     });
 }
 
