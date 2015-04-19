@@ -6,14 +6,28 @@ var _ = require('lodash');
 var chokidar = require('chokidar');
 var utils = require('./utils');
 
+
+var EVENT_DESCRIPTIONS = {
+    add: 'Added file',
+    addDir: 'Added directory',
+    unlink: 'Removed file',
+    unlinkDir: 'Removed directory',
+    change: 'Changed file'
+};
+
 var defaultOpts = {
     debounce: 400,
     followSymlinks: false,
     ignore: null,
     polling: false,
     pollInterval: 100,
-    pollIntervalBinary: 300
+    pollIntervalBinary: 300,
+    verbose: false,
+    initial: false
 };
+
+var VERSION = 'chokidar-cli: ' + require('./package.json').version +
+              '\nchokidar: ' + require('chokidar/package').version;
 
 var argv = require('yargs')
     .usage(
@@ -48,6 +62,11 @@ var argv = require('yargs')
                   'Needs to be surrounded with quotes to prevent shell globbing. ' +
                   'The whole relative or absolute path is tested, not just filename'
     })
+    .option('initial', {
+        describe: 'When set, command is initially run once',
+        default: defaultOpts.initial,
+        type: 'boolean'
+    })
     .option('p', {
         alias: 'polling',
         describe: 'Whether to use fs.watchFile(backed by polling) instead of ' +
@@ -71,10 +90,15 @@ var argv = require('yargs')
         default: defaultOpts.pollIntervalBinary,
         type: 'number'
     })
+    .option('verbose', {
+        describe: 'When set, output is more verbose',
+        default: defaultOpts.verbose,
+        type: 'boolean'
+    })
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')
-    .version(require('./package.json').version)
+    .version(VERSION)
     .argv;
 
 
@@ -96,8 +120,12 @@ function startWatching(opts) {
     var watcher = chokidar.watch(opts.pattern, chokidarOpts);
 
     var debouncedRun = _.debounce(run, opts.debounce);
-    watcher.on('change', function(path, stats) {
-        // TODO: commands might be run concurrently
+    watcher.on('all', function(event, path) {
+        var description = EVENT_DESCRIPTIONS[event] + ':';
+
+        if (opts.verbose) console.log(description, path);
+
+        // TODO: commands might be still run concurrently
         debouncedRun(opts.command);
     });
 
@@ -116,7 +144,8 @@ function createChokidarOpts(opts) {
         followSymlinks: opts.followSymlinks,
         usePolling: opts.polling,
         interval: opts.pollInterval,
-        binaryInterval: opts.pollIntervalBinary
+        binaryInterval: opts.pollIntervalBinary,
+        ignoreInitial: !opts.initial
     };
     if (opts.ignore) chokidarOpts.ignore = opts.ignore;
 
