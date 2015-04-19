@@ -1,6 +1,12 @@
 # Chokidar CLI
 
-Command line interface for [Chokidar](https://github.com/paulmillr/chokidar).
+Ultra-fast cross-platform command line utility to watch file system changes.
+
+The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar), which is one of the best watch utilities for Node.
+
+As Chokidar documentation says:
+
+> It is used in brunch, karma, PM2, browserify, webpack, BrowserSync, socketstream, derby, and many others. It has proven itself in production environments.
 
 ## Install
 
@@ -58,3 +64,7 @@ Options:
 Examples:
   watch "**/*.js" "npm run build-js"    build when any .js file changes
 ```
+
+## License
+
+MIT
