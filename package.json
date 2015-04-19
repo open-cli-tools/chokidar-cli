@@ -1,6 +1,6 @@
 {
   "name": "chokidar-cli",
-  "description": "A neat wrapper around node.js fs.watch / fs.watchFile / fsevents.",
+  "description": "Ultra-fast cross-platform command line utility to watch file system changes.",
   "version": "0.0.1",
   "keywords": [
     "fs",
