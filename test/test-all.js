@@ -62,7 +62,7 @@ describe('chokidar-cli', function() {
         var touch = 'touch ' + CHANGE_FILE
         // No quotes needed in glob pattern because node process spawn
         // does no globbing
-        run('node ../index.js "dir/**/*.less" "' + touch + '"', {
+        run('node ../index.js "dir/**/*.less" -c "' + touch + '"', {
             pipe: DEBUG_TESTS,
             cwd: './test',
             // Called after process is spawned
