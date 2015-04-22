@@ -20,19 +20,13 @@ function run(cmd, opts) {
     var parts = shellQuote.parse(cmd);
     try {
         child = childProcess.spawn(_.head(parts), _.tail(parts), {
-            cwd: opts.cwd
+            cwd: opts.cwd,
+            stdio: opts.pipe ? "inherit" : null
         });
     } catch (e) {
         return Promise.reject(e);
     }
     opts.callback(child);
-
-    // TODO: Is there a chance of locking/waiting forever?
-    if (opts.pipe) {
-        child.stdin.pipe(process.stdin);
-        child.stdout.pipe(process.stdout);
-        child.stderr.pipe(process.stderr);
-    }
 
     return new Promise(function(resolve, reject) {
         child.on('error', function(err) {
