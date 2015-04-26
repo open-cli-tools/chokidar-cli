@@ -159,7 +159,7 @@ function createChokidarOpts(opts) {
         binaryInterval: opts.pollIntervalBinary,
         ignoreInitial: !opts.initial
     };
-    if (opts.ignore) chokidarOpts.ignore = opts.ignore;
+    if (opts.ignore) chokidarOpts.ignored = opts.ignore;
 
     return chokidarOpts;
 }
