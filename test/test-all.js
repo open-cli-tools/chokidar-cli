@@ -59,9 +59,11 @@ describe('chokidar-cli', function() {
         var killed = false;
 
         // Use a file to detect that trigger command is actually run
-        var touch = 'touch ' + CHANGE_FILE
+        var touch = 'touch ' + CHANGE_FILE;
+
         // No quotes needed in glob pattern because node process spawn
         // does no globbing
+        // TODO: touch command does not always create file before assertion
         run('node ../index.js "dir/**/*.less" -c "' + touch + '"', {
             pipe: DEBUG_TESTS,
             cwd: './test',
