@@ -16,26 +16,32 @@ function run(cmd, opts) {
         }
     }, opts);
 
-    var child;
-    var parts = shellQuote.parse(cmd);
-    try {
-        child = childProcess.spawn(_.head(parts), _.tail(parts), {
-            cwd: opts.cwd,
-            stdio: opts.pipe ? "inherit" : null
-        });
-    } catch (e) {
-        return Promise.reject(e);
-    }
-    opts.callback(child);
-
     return new Promise(function(resolve, reject) {
-        child.on('error', function(err) {
-            reject(err);
-        });
+        var child;
+        var parts = shellQuote.parse(cmd);
+        try {
+            child = childProcess.spawn(_.head(parts), _.tail(parts), {
+                cwd: opts.cwd,
+                stdio: opts.pipe ? 'inherit' : null
+            });
+        } catch (e) {
+            return Promise.reject(e);
+        }
 
-        child.on('close', function(exitCode) {
+        opts.callback(child);
+
+        function errorHandler(err) {
+            child.removeListener('close', closeHandler);
+            reject(err);
+        }
+
+        function closeHandler(exitCode) {
+            child.removeListener('error', errorHandler);
             resolve(exitCode);
-        });
+        }
+
+        child.once('error', errorHandler);
+        child.once('close', closeHandler);
     });
 }
 
