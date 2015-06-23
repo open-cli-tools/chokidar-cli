@@ -85,33 +85,33 @@ Options:
   -s, --follow-symlinks   When not set, only the symlinks themselves will be
                           watched for changes instead of following the link
                           references and bubbling events through the links path
-                                                     [boolean]  [default: false]
-  -i, --ignore            Pattern for files which should be ignored. Needs to
-                          be surrounded with quotes to prevent shell globbing.
-                          The whole relative or absolute path is tested, not
-                          just filename
+                                                      [boolean] [default: false]
+  -i, --ignore            Pattern for files which should be ignored. Needs to be
+                          surrounded with quotes to prevent shell globbing. The
+                          whole relative or absolute path is tested, not just
+                          filename. Supports glob patters or regexes using
+                          format: /yourmatch/i
   --initial               When set, command is initially run once
-                                                     [boolean]  [default: false]
-  -p, --polling           Whether to use fs.watchFile(backed by polling)
-                          instead of fs.watch. This might lead to high CPU
-                          utilization. It is typically necessary to set this to
-                          true to successfully watch files over a network, and
-                          it may be necessary to successfully watch files in
-                          other non-standard situations
-                                                     [boolean]  [default: false]
-  --poll-interval         Interval of file system polling. Effective when
-                          --polling is set                        [default: 100]
+                                                      [boolean] [default: false]
+  -p, --polling           Whether to use fs.watchFile(backed by polling) instead
+                          of fs.watch. This might lead to high CPU utilization.
+                          It is typically necessary to set this to true to
+                          successfully watch files over a network, and it may be
+                          necessary to successfully watch files in other non-
+                          standard situations         [boolean] [default: false]
+  --poll-interval         Interval of file system polling. Effective when --
+                          polling is set                          [default: 100]
   --poll-interval-binary  Interval of file system polling for binary files.
                           Effective when --polling is set         [default: 300]
   --verbose               When set, output is more verbose and human readable.
-                                                     [boolean]  [default: false]
-  -h, --help              Show help
-  -v, --version           Show version number
+                                                      [boolean] [default: false]
+  -h, --help              Show help                                    [boolean]
+  -v, --version           Show version number                          [boolean]
 
 Examples:
-  chokidar "**/*.js" -c "npm run build-js"    build when any .js file changes
-  chokidar "**/*.js" "**/*.less"              output changes of .js and .less
-                                              files
+  chokidar "**/*.js" -c "npm run build-js"  build when any .js file changes
+  chokidar "**/*.js" "**/*.less"            output changes of .js and .less
+                                            files
 ```
 
 ## License

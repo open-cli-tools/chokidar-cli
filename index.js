@@ -66,7 +66,8 @@ var argv = require('yargs')
         alias: 'ignore',
         describe: 'Pattern for files which should be ignored. ' +
                   'Needs to be surrounded with quotes to prevent shell globbing. ' +
-                  'The whole relative or absolute path is tested, not just filename'
+                  'The whole relative or absolute path is tested, not just filename. ' +
+                  'Supports glob patters or regexes using format: /yourmatch/i'
     })
     .option('initial', {
         describe: 'When set, command is initially run once',
@@ -152,6 +153,9 @@ function startWatching(opts) {
 }
 
 function createChokidarOpts(opts) {
+    // Transform e.g. regex ignores to real regex objects
+    opts.ignore = _resolveIgnoreOpt(opts.ignore);
+
     var chokidarOpts = {
         followSymlinks: opts.followSymlinks,
         usePolling: opts.polling,
@@ -162,6 +166,26 @@ function createChokidarOpts(opts) {
     if (opts.ignore) chokidarOpts.ignored = opts.ignore;
 
     return chokidarOpts;
+}
+
+// Takes string or array of strings
+function _resolveIgnoreOpt(ignoreOpt) {
+    if (!ignoreOpt) {
+        return ignoreOpt;
+    }
+
+    var ignores = !_.isArray(ignoreOpt) ? [ignoreOpt] : ignoreOpt;
+
+    return _.map(ignores, function(ignore) {
+        var isRegex = ignore[0] === '/' && ignore[ignore.length - 1] === '/';
+        if (isRegex) {
+            // Convert user input to regex object
+            var match = ignore.match(new RegExp('^/(.*)/(.*?)$'));
+            return new RegExp(match[1], match[2]);
+        }
+
+        return ignore;
+    });
 }
 
 function run(cmd) {
