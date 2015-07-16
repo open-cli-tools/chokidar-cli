@@ -23,6 +23,7 @@ var defaultOpts = {
     pollInterval: 100,
     pollIntervalBinary: 300,
     verbose: false,
+    silent: false,
     initial: false,
     command: null
 };
@@ -102,6 +103,11 @@ var argv = require('yargs')
         default: defaultOpts.verbose,
         type: 'boolean'
     })
+    .option('silent', {
+        describe: 'When set, internal messages of chokidar-cli won\'t be written.',
+        default: defaultOpts.silent,
+        type: 'boolean'
+    })
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')
@@ -132,7 +138,9 @@ function startWatching(opts) {
         if (opts.verbose) {
             console.error(description, path);
         } else {
-            console.log(event + ':' + path);
+            if (!opts.silent) {
+                console.log(event + ':' + path);
+            }
         }
 
         // TODO: commands might be still run concurrently
@@ -148,7 +156,9 @@ function startWatching(opts) {
 
     watcher.once('ready', function() {
         var list = opts.patterns.join('", "');
-        console.error('Watching', '"' + list + '" ..');
+        if (!opts.silent) {
+            console.error('Watching', '"' + list + '" ..');
+        }
     });
 }
 

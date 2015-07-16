@@ -105,6 +105,8 @@ Options:
                           Effective when --polling is set         [default: 300]
   --verbose               When set, output is more verbose and human readable.
                                                       [boolean] [default: false]
+  --silent                When set, internal messages of chokidar-cli won't be
+                          written.                    [boolean] [default: false]
   -h, --help              Show help                                    [boolean]
   -v, --version           Show version number                          [boolean]
 
