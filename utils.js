@@ -3,7 +3,20 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 var shellQuote = require('shell-quote');
 
+// Try to resolve path to shell.
+// We assume that Windows provides COMSPEC env variable
+// and other platforms provide SHELL env variable
+var SHELL_PATH = process.env.SHELL || process.env.COMSPEC;
+var EXECUTE_OPTION = process.env.COMSPEC !== undefined ? '/c' : '-c';
+
+// XXX: Wrapping tos to a promise is a bit wrong abstraction. Maybe RX suits
+// better?
 function run(cmd, opts) {
+    if (!SHELL_PATH) {
+        // If we cannot resolve shell, better to just crash
+        throw new Error('$SHELL environment variable is not set.');
+    }
+
     opts = _.merge({
         pipe: true,
         cwd: undefined,
@@ -18,9 +31,9 @@ function run(cmd, opts) {
 
     return new Promise(function(resolve, reject) {
         var child;
-        var parts = shellQuote.parse(cmd);
+
         try {
-            child = childProcess.spawn(_.head(parts), _.tail(parts), {
+            child = childProcess.spawn(SHELL_PATH, [EXECUTE_OPTION, cmd], {
                 cwd: opts.cwd,
                 stdio: opts.pipe ? 'inherit' : null
             });
