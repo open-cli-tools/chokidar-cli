@@ -33,15 +33,15 @@ var VERSION = 'chokidar-cli: ' + require('./package.json').version +
 
 var argv = require('yargs')
     .usage(
-        'Usage: $0 <pattern> [<pattern>...] [options]\n\n' +
+        'Usage: chokidar <pattern> [<pattern>...] [options]\n\n' +
         '<pattern>:\n' +
         'Glob pattern to specify files to be watched.\n' +
         'Multiple patterns can be watched by separating patterns with spaces.\n' +
         'To prevent shell globbing, write pattern inside quotes.\n' +
         'Guide to globs: https://github.com/isaacs/node-glob#glob-primer\n'
     )
-    .example('$0 "**/*.js" -c "npm run build-js"', 'build when any .js file changes')
-    .example('$0 "**/*.js" "**/*.less"', 'output changes of .js and .less files')
+    .example('chokidar "**/*.js" -c "npm run build-js"', 'build when any .js file changes')
+    .example('chokidar "**/*.js" "**/*.less"', 'output changes of .js and .less files')
     .demand(1)
     .option('c', {
         alias: 'command',
