@@ -82,6 +82,8 @@ Options:
                           surrounded with quotes when command contains spaces
   -d, --debounce          Debounce timeout in ms for executing command
                                                                   [default: 400]
+  -t, --throttle          Throttle timeout in ms for executing command
+                                                                  [default: 0]
   -s, --follow-symlinks   When not set, only the symlinks themselves will be
                           watched for changes instead of following the link
                           references and bubbling events through the links path
