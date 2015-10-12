@@ -17,6 +17,7 @@ var EVENT_DESCRIPTIONS = {
 
 var defaultOpts = {
     debounce: 400,
+    throttle: 0,
     followSymlinks: false,
     ignore: null,
     polling: false,
@@ -53,6 +54,12 @@ var argv = require('yargs')
         alias: 'debounce',
         default: defaultOpts.debounce,
         describe: 'Debounce timeout in ms for executing command',
+        type: 'number'
+    })
+    .option('t', {
+        alias: 'throttle',
+        default: defaultOpts.throttle,
+        describe: 'Throttle timeout in ms for executing command',
         type: 'number'
     })
     .option('s', {
@@ -131,7 +138,8 @@ function startWatching(opts) {
     var chokidarOpts = createChokidarOpts(opts);
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
-    var debouncedRun = _.debounce(run, opts.debounce);
+    var throttledRun = _.throttle(run, opts.throttle);
+    var debouncedRun = _.debounce(throttledRun, opts.debounce);
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
 
