@@ -8,6 +8,7 @@ The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar
 
 > It is used in
 > [brunch](http://brunch.io),
+> [gulp](https://github.com/gulpjs/gulp/),
 > [karma](http://karma-runner.github.io),
 > [PM2](https://github.com/Unitech/PM2),
 > [browserify](http://browserify.org/),
