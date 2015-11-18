@@ -4,10 +4,6 @@ node_js:
 - '4'
 - '0.12'
 - '0.10'
-before_script:
-- npm install
-script:
-- npm run test
 notifications:
   email:
   - kimmobrunfeldt+chokidar@gmail.com
