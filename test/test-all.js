@@ -16,7 +16,7 @@ var CHANGE_FILE = 'dir/change';
 
 // Time to wait for different tasks
 var TIMEOUT_WATCH_READY = 1000;
-var TIMEOUT_CHANGE_DETECTED = 500;
+var TIMEOUT_CHANGE_DETECTED = 700;
 
 // Abs path to test directory
 var testDir = path.resolve(__dirname);
