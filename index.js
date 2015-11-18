@@ -153,7 +153,11 @@ function startWatching(opts) {
 
         // TODO: commands might be still run concurrently
         if (opts.command) {
-            debouncedRun(opts.command);
+            debouncedRun(
+                opts.command
+                    .replace(/\{path\}/ig, path)
+                    .replace(/\{event\}/ig, event)
+            );
         }
     });
 
