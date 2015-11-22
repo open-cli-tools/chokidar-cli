@@ -16,7 +16,8 @@ var CHANGE_FILE = 'dir/change';
 
 // Time to wait for different tasks
 var TIMEOUT_WATCH_READY = 1000;
-var TIMEOUT_CHANGE_DETECTED = 500;
+var TIMEOUT_CHANGE_DETECTED = 700;
+var TIMEOUT_KILL = TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000;
 
 // Abs path to test directory
 var testDir = path.resolve(__dirname);
@@ -73,7 +74,7 @@ describe('chokidar-cli', function() {
                     // Kill child after test case
                     child.kill();
                     killed = true;
-                }, TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000);
+                }, TIMEOUT_KILL);
             }
         })
         .then(function childProcessExited(exitCode) {
@@ -90,6 +91,27 @@ describe('chokidar-cli', function() {
                 assert(changeFileExists(), 'change file should exist')
             }, TIMEOUT_CHANGE_DETECTED)
         }, TIMEOUT_WATCH_READY);
+    });
+
+    it('should replace {path} and {event} in command', function(done) {
+        var command = "echo '{event}:{path}' > " + CHANGE_FILE;
+
+        setTimeout(function() {
+          fs.writeFileSync(resolve('dir/a.js'), 'content');
+        }, TIMEOUT_WATCH_READY);
+
+        run('node ../index.js "dir/a.js" -c "' + command + '"', {
+            pipe: DEBUG_TESTS,
+            cwd: './test',
+            callback: function(child) {
+                setTimeout(child.kill.bind(child), TIMEOUT_KILL);
+            }
+        })
+        .then(function() {
+            var res = fs.readFileSync(resolve(CHANGE_FILE)).toString().trim();
+            assert.equal(res, 'change:dir/a.js', 'need event/path detail');
+            done()
+        });
     });
 });
 
