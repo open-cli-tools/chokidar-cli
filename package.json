@@ -1,51 +1,52 @@
 {
-    "name": "chokidar-cli",
-    "description": "Ultra-fast cross-platform command line utility to watch file system changes.",
-    "version": "1.1.1-dev",
-    "keywords": [
-        "fs",
-        "watch",
-        "watchFile",
-        "watcher",
-        "watching",
-        "file",
-        "fsevents",
-        "chokidar",
-        "cli",
-        "command",
-        "shell",
-        "bash"
-    ],
-    "bin": {
-        "chokidar": "./index.js"
-    },
-    "homepage": "https://github.com/kimmobrunfeldt/chokidar-cli",
-    "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com> (http://kimmobrunfeldt.github.io/)",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/kimmobrunfeldt/chokidar-cli.git"
-    },
-    "bugs": {
-        "url": "http://github.com/kimmobrunfeldt/chokidar-cli/issues"
-    },
-    "license": "MIT",
-    "dependencies": {
-        "anymatch": "^1.1.0",
-        "bluebird": "^2.9.24",
-        "chokidar": "^1.0.1",
-        "lodash": "^3.7.0",
-        "shell-quote": "^1.4.3",
-        "yargs": "^3.7.2"
-    },
-    "devDependencies": {
-        "commander": "^2.8.0",
-        "mocha": "^2.2.4",
-        "mustache": "^2.0.0",
-        "semver": "^4.3.3",
-        "shelljs": "^0.4.0",
-        "string": "^3.1.1"
-    },
-    "scripts": {
-        "test": "mocha"
-    }
+  "name": "chokidar-cli",
+  "description": "Ultra-fast cross-platform command line utility to watch file system changes.",
+  "version": "1.1.1-dev",
+  "keywords": [
+    "fs",
+    "watch",
+    "watchFile",
+    "watcher",
+    "watching",
+    "file",
+    "fsevents",
+    "chokidar",
+    "cli",
+    "command",
+    "shell",
+    "bash"
+  ],
+  "bin": {
+    "chokidar": "./index.js"
+  },
+  "homepage": "https://github.com/kimmobrunfeldt/chokidar-cli",
+  "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com> (http://kimmobrunfeldt.github.io/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kimmobrunfeldt/chokidar-cli.git"
+  },
+  "bugs": {
+    "url": "http://github.com/kimmobrunfeldt/chokidar-cli/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "anymatch": "^1.1.0",
+    "bluebird": "^2.9.24",
+    "chokidar": "^1.0.1",
+    "lodash": "^3.7.0",
+    "shell-quote": "^1.4.3",
+    "yargs": "^3.7.2"
+  },
+  "devDependencies": {
+    "commander": "^2.8.0",
+    "mocha": "^2.2.4",
+    "mustache": "^2.0.0",
+    "releasor": "^1.2.1",
+    "semver": "^4.3.3",
+    "shelljs": "^0.4.0",
+    "string": "^3.1.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
 }
