@@ -48,7 +48,9 @@ var argv = require('yargs')
         alias: 'command',
         describe: 'Command to run after each change. ' +
                   'Needs to be surrounded with quotes when command contains ' +
-                  'spaces'
+                  'spaces. Instances of `{path}` or `{event}` within the ' +
+                  'command will be replaced by the corresponding values from ' +
+                  'the chokidar event.'
     })
     .option('d', {
         alias: 'debounce',
