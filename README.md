@@ -65,7 +65,7 @@ test/b.js
 
 ```chokidar '**/*.less' -c 'npm run build-less' --polling```
 
-**Pass the path and event details in to your custom command
+**Pass the path and event details in to your custom command**
 
 ```chokidar '**/*.less' -c 'if [ "{event}" = "change" ]; then npm run build-less -- {path}; fi;'```
 
