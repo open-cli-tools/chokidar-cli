@@ -6,7 +6,6 @@ var _ = require('lodash');
 var chokidar = require('chokidar');
 var utils = require('./utils');
 
-
 var EVENT_DESCRIPTIONS = {
     add: 'File added',
     addDir: 'Directory added',
@@ -153,7 +152,7 @@ function startWatching(opts) {
             }
         }
 
-        // TODO: commands might be still run concurrently
+        // XXX: commands might be still run concurrently
         if (opts.command) {
             debouncedRun(
                 opts.command
