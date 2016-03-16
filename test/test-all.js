@@ -36,7 +36,7 @@ describe('chokidar-cli', function() {
         .then(function() {
             done();
         });
-    })
+    });
 
     it('help should be succesful', function(done) {
         run('node index.js --help', {pipe: DEBUG_TESTS})
@@ -88,8 +88,8 @@ describe('chokidar-cli', function() {
             fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
 
             setTimeout(function() {
-                assert(changeFileExists(), 'change file should exist')
-            }, TIMEOUT_CHANGE_DETECTED)
+                assert(changeFileExists(), 'change file should exist');
+            }, TIMEOUT_CHANGE_DETECTED);
         }, TIMEOUT_WATCH_READY);
     });
 
@@ -110,7 +110,7 @@ describe('chokidar-cli', function() {
         .then(function() {
             var res = fs.readFileSync(resolve(CHANGE_FILE)).toString().trim();
             assert.equal(res, 'change:dir/a.js', 'need event/path detail');
-            done()
+            done();
         });
     });
 });
