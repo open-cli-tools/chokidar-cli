@@ -93,6 +93,45 @@ describe('chokidar-cli', function() {
         }, TIMEOUT_WATCH_READY);
     });
 
+    it('should throttle invocations of command', function(done) {
+        var touch = 'touch ' + CHANGE_FILE;
+        var throttleTime = (2 * TIMEOUT_CHANGE_DETECTED) + 100;
+
+        run('node ../index.js "dir/**/*.less" --debounce 0 --throttle ' + throttleTime + ' -c "' + touch + '"', {
+            pipe: DEBUG_TESTS,
+            cwd: './test',
+            callback: function(child) {
+                setTimeout(function killChild() {
+                    // Kill child after test case
+                    child.kill();
+                    killed = true;
+                }, TIMEOUT_KILL);
+            }
+        });
+
+        setTimeout(function afterWatchIsReady() {
+            fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
+            setTimeout(function() {
+                assert(changeFileExists(), 'change file should exist after first change');
+                fs.unlinkSync(resolve(CHANGE_FILE));
+                fs.writeFileSync(resolve('dir/subdir/c.less'), 'more content');
+                setTimeout(function() {
+                    assert.equal(changeFileExists(), false, 'change file should not exist after second change');
+                    done();
+                }, TIMEOUT_CHANGE_DETECTED);
+            }, TIMEOUT_CHANGE_DETECTED);
+        }, TIMEOUT_WATCH_READY);
+    });
+
+    it.skip('should debounce invocations of command', function(done) {
+    });
+
+    it.skip('should not run the command more than once concurrently', function(done) {
+    });
+
+    it.skip('should run the command concurrently when --concurrent is used', function(done) {
+    });
+
     it('should replace {path} and {event} in command', function(done) {
         var command = "echo '{event}:{path}' > " + CHANGE_FILE;
 
