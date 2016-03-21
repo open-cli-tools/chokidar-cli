@@ -150,23 +150,17 @@ function startWatching(opts) {
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
     var child;
 
-    // var throttledRun = _.throttle(run, opts.throttle);
-    // var debouncedRun = _.debounce(throttledRun, opts.debounce);
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
         function executeCommand() {
-            if (child) child.removeAllListeners();
-            child = run(
-                opts.command
-                    .replace(/\{path\}/ig, path)
-                    .replace(/\{event\}/ig, event)
-            );
-            child.once('error', function(error) {
-                throw error;
-            });
-            child.once('exit', function() {
-                child = undefined;
-            });
+            console.log('will run command');
+            _.debounce(_.throttle(function() {
+                if (child) child.removeAllListeners();
+                console.log('spawning new command process');
+                child = childProcess.spawn(SHELL_PATH, [EXECUTE_OPTION, opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)]);
+                child.once('error', function(error) { throw error; });
+                child.once('exit', function() { child = undefined; });
+            }, opts.throttle), opts.debounce)();
         }
 
         if (opts.verbose) {
@@ -181,10 +175,13 @@ function startWatching(opts) {
             // If a previous run of command created a child, and the concurrent option is not set,
             // then we should kill that child process before running it again
             if (child && !opts.concurrent) {
+                console.log('run command after killing previous child');
                 child.once('exit', executeCommand);
                 child.kill();
+            } else {
+                console.log('run command');
+                setImmediate(executeCommand);
             }
-            setImmediate(executeCommand);
         }
     });
 
