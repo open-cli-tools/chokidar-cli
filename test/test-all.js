@@ -95,7 +95,8 @@ describe('chokidar-cli', function() {
 
     it('should throttle invocations of command', function(done) {
         var touch = 'touch ' + CHANGE_FILE;
-        var throttleTime = (2 * TIMEOUT_CHANGE_DETECTED) + 100;
+        var changedDetectedTime = 100;
+        var throttleTime = (2 * changedDetectedTime) + 100;
 
         run('node ../index.js "dir/**/*.less" --debounce 0 --throttle ' + throttleTime + ' -c "' + touch + '"', {
             pipe: DEBUG_TESTS,
@@ -104,9 +105,11 @@ describe('chokidar-cli', function() {
                 setTimeout(function killChild() {
                     // Kill child after test case
                     child.kill();
-                    killed = true;
                 }, TIMEOUT_KILL);
             }
+        })
+        .then(function childProcessExited(exitCode) {
+            done();
         });
 
         setTimeout(function afterWatchIsReady() {
@@ -117,13 +120,45 @@ describe('chokidar-cli', function() {
                 fs.writeFileSync(resolve('dir/subdir/c.less'), 'more content');
                 setTimeout(function() {
                     assert.equal(changeFileExists(), false, 'change file should not exist after second change');
-                    done();
-                }, TIMEOUT_CHANGE_DETECTED);
-            }, TIMEOUT_CHANGE_DETECTED);
+                }, changedDetectedTime);
+            }, changedDetectedTime);
         }, TIMEOUT_WATCH_READY);
     });
 
-    it.skip('should debounce invocations of command', function(done) {
+    it('should debounce invocations of command', function(done) {
+        var touch = 'touch ' + CHANGE_FILE;
+        var changedDetectedTime = 100;
+        var debounceTime = (2 * changedDetectedTime) + 100;
+        var killTime = TIMEOUT_WATCH_READY + (2 * changedDetectedTime) + debounceTime + 1000;
+
+        run('node ../index.js "dir/**/*.less" --debounce ' + debounceTime + ' -c "' + touch + '"', {
+            pipe: DEBUG_TESTS,
+            cwd: './test',
+            callback: function(child) {
+                setTimeout(function killChild() {
+                    // Kill child after test case
+                    child.kill();
+                }, killTime);
+            }
+        })
+        .then(function childProcessExited(exitCode) {
+            done();
+        });
+
+        setTimeout(function afterWatchIsReady() {
+            fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
+            setTimeout(function() {
+                assert.equal(changeFileExists(), false, 'change file should not exist earlier than debounce time (first)');
+                fs.writeFileSync(resolve('dir/subdir/c.less'), 'more content');
+                setTimeout(function() {
+                    assert.equal(changeFileExists(), false, 'change file should not exist earlier than debounce time (second)');
+                }, changedDetectedTime);
+                setTimeout(function() {
+                    assert(changeFileExists(), 'change file should exist after debounce time');
+                }, debounceTime + changedDetectedTime);
+            }, changedDetectedTime);
+        }, TIMEOUT_WATCH_READY);
+
     });
 
     it.skip('should not run the command more than once concurrently', function(done) {
