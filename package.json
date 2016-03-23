@@ -31,10 +31,12 @@
   "license": "MIT",
   "dependencies": {
     "anymatch": "^1.1.0",
-    "bluebird": "^2.9.24",
+    "async": "^2.0.0-rc.1",
+    "bluebird": "^3.3.4",
     "chokidar": "^1.0.1",
+    "colors": "^1.1.2",
+    "exec-sh": "^0.2.0",
     "lodash": "^3.7.0",
-    "shell-quote": "^1.4.3",
     "yargs": "^3.7.2"
   },
   "devDependencies": {
