@@ -146,24 +146,19 @@ function getUserOpts(argv) {
 }
 
 function startWatching(opts) {
+    var child;
     var chokidarOpts = createChokidarOpts(opts);
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
-    var child;
-    var execFn;
+    var execFn = _.debounce(_.throttle(function(event, path) {
+        if (child) child.removeAllListeners();
+        child = childProcess.spawn(SHELL_PATH, [EXECUTE_OPTION, opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)]);
+        child.once('error', function(error) { throw error; });
+        child.once('exit', function() { child = undefined; });
+    }, opts.throttle), opts.debounce);
 
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
-        function executeCommand() {
-            if (!execFn) {
-              execFn = _.debounce(_.throttle(function() {
-                  if (child) child.removeAllListeners();
-                  child = childProcess.spawn(SHELL_PATH, [EXECUTE_OPTION, opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)]);
-                  child.once('error', function(error) { throw error; });
-                  child.once('exit', function() { child = undefined; });
-              }, opts.throttle), opts.debounce);
-            }
-            execFn();
-        }
+        var executeCommand = _.partial(execFn, event, path);
 
         if (opts.verbose) {
             console.error(description, path);
