@@ -34,7 +34,7 @@
     "bluebird": "^2.9.24",
     "chokidar": "^1.0.1",
     "lodash": "^3.7.0",
-    "npm-run-all": "^1.6.0",
+    "npm-run-all": "1.6.0",
     "shell-quote": "^1.4.3",
     "yargs": "^3.7.2"
   },
