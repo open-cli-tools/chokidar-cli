@@ -161,12 +161,6 @@ describe('chokidar-cli', function() {
 
     });
 
-    it.skip('should not run the command more than once concurrently', function(done) {
-    });
-
-    it.skip('should run the command concurrently when --concurrent is used', function(done) {
-    });
-
     it('should replace {path} and {event} in command', function(done) {
         var command = "echo '{event}:{path}' > " + CHANGE_FILE;
 

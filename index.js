@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-var childProcess = require('child_process');
 var Promise = require('bluebird');
 var _ = require('lodash');
 var chokidar = require('chokidar');
+var spawn = require('npm-run-all/lib/spawn').default;
 
 var EVENT_DESCRIPTIONS = {
     add: 'File added',
@@ -151,7 +151,13 @@ function startWatching(opts) {
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
     var execFn = _.debounce(_.throttle(function(event, path) {
         if (child) child.removeAllListeners();
-        child = childProcess.spawn(SHELL_PATH, [EXECUTE_OPTION, opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)]);
+        child = spawn(SHELL_PATH, [
+          EXECUTE_OPTION,
+          opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)
+        ],
+        {
+          stdio: 'inherit'
+        });
         child.once('error', function(error) { throw error; });
         child.once('exit', function() { child = undefined; });
     }, opts.throttle), opts.debounce);
@@ -227,10 +233,6 @@ function _resolveIgnoreOpt(ignoreOpt) {
 
         return ignore;
     });
-}
-
-function run(cmd) {
-    return childProcess.spawn(SHELL_PATH, [EXECUTE_OPTION, cmd]);
 }
 
 main();
