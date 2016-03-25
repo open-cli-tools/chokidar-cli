@@ -152,11 +152,10 @@ function startWatching(opts) {
     var execFn = _.debounce(_.throttle(function(event, path) {
         if (child) child.removeAllListeners();
         child = spawn(SHELL_PATH, [
-          EXECUTE_OPTION,
-          opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)
-        ],
-        {
-          stdio: 'inherit'
+            EXECUTE_OPTION,
+            opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)
+        ], {
+            stdio: 'inherit'
         });
         child.once('error', function(error) { throw error; });
         child.once('exit', function() { child = undefined; });
