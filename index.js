@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-var childProcess = require('child_process');
-var Promise = require('bluebird');
 var _ = require('lodash');
 var chokidar = require('chokidar');
 var utils = require('./utils');
@@ -25,7 +23,8 @@ var defaultOpts = {
     verbose: false,
     silent: false,
     initial: false,
-    command: null
+    command: null,
+    concurrency: 'kill'
 };
 
 var VERSION = 'chokidar-cli: ' + require('./package.json').version +
@@ -50,6 +49,14 @@ var argv = require('yargs')
                   'spaces. Instances of `{path}` or `{event}` within the ' +
                   'command will be replaced by the corresponding values from ' +
                   'the chokidar event.'
+    })
+    .option('concurrency', {
+        default: defaultOpts.concurrency,
+        describe: 'Command execution concurrency model.\n' +
+                  '- kill: kills unfinished process before starting a new one.\n' +
+                  '- queue: waits until previously started process is finished before starting a new one.\n' +
+                  '- parallel: executes subsequent commands in parallel.',
+        choices: ['kill', 'queue', 'parallel']
     })
     .option('d', {
         alias: 'debounce',
@@ -134,13 +141,16 @@ function getUserOpts(argv) {
     return argv;
 }
 
-// Estimates spent working hours based on commit dates
 function startWatching(opts) {
     var chokidarOpts = createChokidarOpts(opts);
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
+    var runner = utils.runner(opts.concurrency);
+    var run = runner.run.bind(runner);
+
     var throttledRun = _.throttle(run, opts.throttle);
     var debouncedRun = _.debounce(throttledRun, opts.debounce);
+
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
 
@@ -152,7 +162,6 @@ function startWatching(opts) {
             }
         }
 
-        // XXX: commands might be still run concurrently
         if (opts.command) {
             debouncedRun(
                 opts.command
@@ -208,14 +217,6 @@ function _resolveIgnoreOpt(ignoreOpt) {
         }
 
         return ignore;
-    });
-}
-
-function run(cmd) {
-    return utils.run(cmd)
-    .catch(function(err) {
-        console.error('Error when executing', cmd);
-        console.error(err.stack);
     });
 }
 
