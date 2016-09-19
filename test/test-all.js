@@ -36,7 +36,7 @@ describe('chokidar-cli', function() {
         .then(function() {
             done();
         });
-    })
+    });
 
     it('help should be succesful', function(done) {
         run('node index.js --help', {pipe: DEBUG_TESTS})
@@ -88,9 +88,77 @@ describe('chokidar-cli', function() {
             fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
 
             setTimeout(function() {
-                assert(changeFileExists(), 'change file should exist')
-            }, TIMEOUT_CHANGE_DETECTED)
+                assert(changeFileExists(), 'change file should exist');
+            }, TIMEOUT_CHANGE_DETECTED);
         }, TIMEOUT_WATCH_READY);
+    });
+
+    it('should throttle invocations of command', function(done) {
+        var touch = 'touch ' + CHANGE_FILE;
+        var changedDetectedTime = 100;
+        var throttleTime = (2 * changedDetectedTime) + 100;
+
+        run('node ../index.js "dir/**/*.less" --debounce 0 --throttle ' + throttleTime + ' -c "' + touch + '"', {
+            pipe: DEBUG_TESTS,
+            cwd: './test',
+            callback: function(child) {
+                setTimeout(function killChild() {
+                    // Kill child after test case
+                    child.kill();
+                }, TIMEOUT_KILL);
+            }
+        })
+        .then(function childProcessExited(exitCode) {
+            done();
+        });
+
+        setTimeout(function afterWatchIsReady() {
+            fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
+            setTimeout(function() {
+                assert(changeFileExists(), 'change file should exist after first change');
+                fs.unlinkSync(resolve(CHANGE_FILE));
+                fs.writeFileSync(resolve('dir/subdir/c.less'), 'more content');
+                setTimeout(function() {
+                    assert.equal(changeFileExists(), false, 'change file should not exist after second change');
+                }, changedDetectedTime);
+            }, changedDetectedTime);
+        }, TIMEOUT_WATCH_READY);
+    });
+
+    it('should debounce invocations of command', function(done) {
+        var touch = 'touch ' + CHANGE_FILE;
+        var changedDetectedTime = 100;
+        var debounceTime = (2 * changedDetectedTime) + 100;
+        var killTime = TIMEOUT_WATCH_READY + (2 * changedDetectedTime) + debounceTime + 1000;
+
+        run('node ../index.js "dir/**/*.less" --debounce ' + debounceTime + ' -c "' + touch + '"', {
+            pipe: DEBUG_TESTS,
+            cwd: './test',
+            callback: function(child) {
+                setTimeout(function killChild() {
+                    // Kill child after test case
+                    child.kill();
+                }, killTime);
+            }
+        })
+        .then(function childProcessExited(exitCode) {
+            done();
+        });
+
+        setTimeout(function afterWatchIsReady() {
+            fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
+            setTimeout(function() {
+                assert.equal(changeFileExists(), false, 'change file should not exist earlier than debounce time (first)');
+                fs.writeFileSync(resolve('dir/subdir/c.less'), 'more content');
+                setTimeout(function() {
+                    assert.equal(changeFileExists(), false, 'change file should not exist earlier than debounce time (second)');
+                }, changedDetectedTime);
+                setTimeout(function() {
+                    assert(changeFileExists(), 'change file should exist after debounce time');
+                }, debounceTime + changedDetectedTime);
+            }, changedDetectedTime);
+        }, TIMEOUT_WATCH_READY);
+
     });
 
     it('should replace {path} and {event} in command', function(done) {
@@ -110,7 +178,7 @@ describe('chokidar-cli', function() {
         .then(function() {
             var res = fs.readFileSync(resolve(CHANGE_FILE)).toString().trim();
             assert.equal(res, 'change:dir/a.js', 'need event/path detail');
-            done()
+            done();
         });
     });
 });

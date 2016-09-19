@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
-var childProcess = require('child_process');
 var Promise = require('bluebird');
 var _ = require('lodash');
 var chokidar = require('chokidar');
-var utils = require('./utils');
+var spawn = require('npm-run-all/lib/spawn').default;
 
 var EVENT_DESCRIPTIONS = {
     add: 'File added',
@@ -13,6 +12,12 @@ var EVENT_DESCRIPTIONS = {
     unlinkDir: 'Directory removed',
     change: 'File changed'
 };
+
+// Try to resolve path to shell.
+// We assume that Windows provides COMSPEC env variable
+// and other platforms provide SHELL env variable
+var SHELL_PATH = process.env.SHELL || process.env.COMSPEC;
+var EXECUTE_OPTION = process.env.COMSPEC !== undefined && process.env.SHELL === undefined ? '/c' : '-c';
 
 var defaultOpts = {
     debounce: 400,
@@ -25,7 +30,8 @@ var defaultOpts = {
     verbose: false,
     silent: false,
     initial: false,
-    command: null
+    command: null,
+    concurrent: false
 };
 
 var VERSION = 'chokidar-cli: ' + require('./package.json').version +
@@ -83,6 +89,11 @@ var argv = require('yargs')
         default: defaultOpts.initial,
         type: 'boolean'
     })
+    .option('concurrent', {
+        describe: 'When set, command is not killed before invoking again',
+        default: defaultOpts.concurrent,
+        type: 'boolean'
+    })
     .option('p', {
         alias: 'polling',
         describe: 'Whether to use fs.watchFile(backed by polling) instead of ' +
@@ -134,15 +145,25 @@ function getUserOpts(argv) {
     return argv;
 }
 
-// Estimates spent working hours based on commit dates
 function startWatching(opts) {
+    var child;
     var chokidarOpts = createChokidarOpts(opts);
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
+    var execFn = _.debounce(_.throttle(function(event, path) {
+        if (child) child.removeAllListeners();
+        child = spawn(SHELL_PATH, [
+            EXECUTE_OPTION,
+            opts.command.replace(/\{path\}/ig, path).replace(/\{event\}/ig, event)
+        ], {
+            stdio: 'inherit'
+        });
+        child.once('error', function(error) { throw error; });
+        child.once('exit', function() { child = undefined; });
+    }, opts.throttle), opts.debounce);
 
-    var throttledRun = _.throttle(run, opts.throttle);
-    var debouncedRun = _.debounce(throttledRun, opts.debounce);
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
+        var executeCommand = _.partial(execFn, event, path);
 
         if (opts.verbose) {
             console.error(description, path);
@@ -152,13 +173,15 @@ function startWatching(opts) {
             }
         }
 
-        // XXX: commands might be still run concurrently
         if (opts.command) {
-            debouncedRun(
-                opts.command
-                    .replace(/\{path\}/ig, path)
-                    .replace(/\{event\}/ig, event)
-            );
+            // If a previous run of command created a child, and the concurrent option is not set,
+            // then we should kill that child process before running it again
+            if (child && !opts.concurrent) {
+                child.once('exit', executeCommand);
+                child.kill();
+            } else {
+                setImmediate(executeCommand);
+            }
         }
     });
 
@@ -208,14 +231,6 @@ function _resolveIgnoreOpt(ignoreOpt) {
         }
 
         return ignore;
-    });
-}
-
-function run(cmd) {
-    return utils.run(cmd)
-    .catch(function(err) {
-        console.error('Error when executing', cmd);
-        console.error(err.stack);
     });
 }
 
