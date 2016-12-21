@@ -5,6 +5,7 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 var chokidar = require('chokidar');
 var utils = require('./utils');
+var pathParse = require('path-parse');
 
 var EVENT_DESCRIPTIONS = {
     add: 'File added',
@@ -154,9 +155,15 @@ function startWatching(opts) {
 
         // XXX: commands might be still run concurrently
         if (opts.command) {
+            var parsedPath = pathParse(path);
             debouncedRun(
                 opts.command
                     .replace(/\{path\}/ig, path)
+                    .replace(/\{root\}/ig, parsedPath.root)
+                    .replace(/\{dir\}/ig, parsedPath.dir)
+                    .replace(/\{base\}/ig, parsedPath.base)
+                    .replace(/\{ext\}/ig, parsedPath.ext)
+                    .replace(/\{name\}/ig, parsedPath.name)
                     .replace(/\{event\}/ig, event)
             );
         }
