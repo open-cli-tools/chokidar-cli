@@ -25,6 +25,7 @@ var defaultOpts = {
     verbose: false,
     silent: false,
     initial: false,
+    runonce: false,
     command: null
 };
 
@@ -81,6 +82,11 @@ var argv = require('yargs')
     .option('initial', {
         describe: 'When set, command is initially run once',
         default: defaultOpts.initial,
+        type: 'boolean'
+    })
+    .option('runonce', {
+        describe: 'When set, command is initially run once and the process is terminated afterwards',
+        default: defaultOpts.runonce,
         type: 'boolean'
     })
     .option('p', {
@@ -180,11 +186,12 @@ function createChokidarOpts(opts) {
     opts.ignore = _resolveIgnoreOpt(opts.ignore);
 
     var chokidarOpts = {
+        persistent: !opts.runonce,
         followSymlinks: opts.followSymlinks,
         usePolling: opts.polling,
         interval: opts.pollInterval,
         binaryInterval: opts.pollIntervalBinary,
-        ignoreInitial: !opts.initial
+        ignoreInitial: !opts.runonce && !opts.initial
     };
     if (opts.ignore) chokidarOpts.ignored = opts.ignore;
 
