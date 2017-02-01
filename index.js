@@ -146,7 +146,7 @@ function startWatching(opts) {
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
     var throttledRun = _.throttle(run, opts.throttle);
-    var debouncedRun = _.debounce(throttledRun, opts.debounce);
+    var debouncedRun = run; // process all requests during initial stage (runonce or initial)
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
 
@@ -178,6 +178,8 @@ function startWatching(opts) {
         if (!opts.silent) {
             console.error('Watching', '"' + list + '" ..');
         }
+        // debounce after initial stage
+        debouncedRun = _.debounce(throttledRun, opts.debounce);
     });
 }
 
