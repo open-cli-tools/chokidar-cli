@@ -21,7 +21,7 @@ var TIMEOUT_KILL = TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000;
 
 // Abs path to test directory
 var testDir = path.resolve(__dirname);
-process.chdir(path.join(testDir, '..'));
+process.chdir(resolve('..'));
 
 describe('chokidar-cli', function() {
     this.timeout(5000);
