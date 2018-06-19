@@ -30,21 +30,21 @@
   },
   "license": "MIT",
   "dependencies": {
-    "anymatch": "^1.1.0",
-    "bluebird": "^2.9.24",
-    "chokidar": "^1.4.3",
-    "lodash": "^3.7.0",
-    "shell-quote": "^1.4.3",
-    "yargs": "^3.7.2"
+    "anymatch": "^2.0.0",
+    "bluebird": "^3.5.1",
+    "chokidar": "^2.0.4",
+    "lodash": "^4.17.10",
+    "shell-quote": "^1.6.1",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
-    "commander": "^2.8.0",
-    "mocha": "^2.2.4",
-    "mustache": "^2.0.0",
+    "commander": "^2.15.1",
+    "mocha": "^5.2.0",
+    "mustache": "^2.3.0",
     "releasor": "^1.2.1",
-    "semver": "^4.3.3",
-    "shelljs": "^0.4.0",
-    "string": "^3.1.1"
+    "semver": "^5.5.0",
+    "shelljs": "^0.8.2",
+    "string": "^3.3.3"
   },
   "scripts": {
     "test": "mocha"
