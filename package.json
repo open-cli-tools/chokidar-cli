@@ -43,8 +43,7 @@
     "mustache": "^2.3.0",
     "releasor": "^1.2.1",
     "semver": "^5.5.0",
-    "shelljs": "^0.8.2",
-    "string": "^3.3.3"
+    "shelljs": "^0.8.2"
   },
   "scripts": {
     "test": "mocha"
