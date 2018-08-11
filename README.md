@@ -38,7 +38,7 @@ npm install -g chokidar-cli
 By default `chokidar` streams changes for all patterns to stdout:
 
 ```bash
-$ chokidar '**/.js' '**/*.less'
+$ chokidar '**/*.js' '**/*.less'
 change:test/dir/a.js
 change:test/dir/a.less
 add:test/b.js
@@ -50,7 +50,7 @@ Each change is represented with format `event:relativepath`. Possible events: `a
 **Output only relative paths on each change**
 
 ```bash
-$ chokidar '**/.js' '**/*.less' | cut -d ':' -f 2-
+$ chokidar '**/*.js' '**/*.less' | cut -d ':' -f 2-
 test/dir/a.js
 test/dir/a.less
 test/b.js
