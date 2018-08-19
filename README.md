@@ -1,6 +1,7 @@
 # Chokidar CLI
 
 [![Build Status](https://travis-ci.org/kimmobrunfeldt/chokidar-cli.svg?branch=master)](https://travis-ci.org/kimmobrunfeldt/chokidar-cli)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkimmobrunfeldt%2Fchokidar-cli.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkimmobrunfeldt%2Fchokidar-cli?ref=badge_shield)
 
 Fast cross-platform command line utility to watch file system changes.
 
@@ -128,3 +129,6 @@ Examples:
 ## License
 
 MIT
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkimmobrunfeldt%2Fchokidar-cli.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkimmobrunfeldt%2Fchokidar-cli?ref=badge_large)
