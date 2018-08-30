@@ -1,7 +1,6 @@
 var childProcess = require('child_process');
 var _ = require('lodash');
 var Promise = require('bluebird');
-var shellQuote = require('shell-quote');
 
 // Try to resolve path to shell.
 // We assume that Windows provides COMSPEC env variable

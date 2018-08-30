@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-var childProcess = require('child_process');
-var Promise = require('bluebird');
 var _ = require('lodash');
 var chokidar = require('chokidar');
 var utils = require('./utils');
