@@ -12,9 +12,6 @@ related to releasing. That stuff is fully automated, just write the functionalit
 ## Release
 
 * Commit all changes
-* Run `./node_modules/.bin/releasor --bump minor`, which will create new tag and publish code to GitHub and npm
-
-    See [releasor documentation](https://github.com/kimmobrunfeldt/releasor)
-    for detailed usage.
-
-* Edit GitHub release notes
+* Bump package.json & pacakge-lock.json version number
+* Create GitHub release with release notes
+* Publish to NPM
