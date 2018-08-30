@@ -1,0 +1,5 @@
+.jshintrc
+.nvmrc
+.travis.yml
+CONTRIBUTING.md
+test/
