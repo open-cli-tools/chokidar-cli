@@ -35,6 +35,21 @@ npm install -g chokidar-cli
 
 ## Usage
 
+Chokidar can be invoked using the `chokidar` command, without the `-cli` suffix.
+
+Arguments use the form of runtime flags with string parameters, delimited by quotes. While in principal both single and double quotes are supported by `chokidar-cli`, the actual command line argument parsing is dependent on the operating system and shell used; for cross-platform compatibility, use double quotes (with escaping, if necessary), as single quotes are not universally supported by all operating systems.
+
+This is particularly important when using chokidar-cli for run scripts specified in `package.json`. For maximum platform compatibility, make sure to use escaped double quotes around chokidar's parameters:
+
+```
+"run": {
+  "chokidar": "chokidar \"**/*.js\" -c \"...\"",
+  ...
+},
+```
+
+## Default behavior
+
 By default `chokidar` streams changes for all patterns to stdout:
 
 ```bash
