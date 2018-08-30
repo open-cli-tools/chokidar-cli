@@ -53,7 +53,7 @@ This is particularly important when using chokidar-cli for run scripts specified
 By default `chokidar` streams changes for all patterns to stdout:
 
 ```bash
-$ chokidar '**/*.js' '**/*.less'
+$ chokidar "**/*.js" "**/*.less"
 change:test/dir/a.js
 change:test/dir/a.less
 add:test/b.js
@@ -65,7 +65,7 @@ Each change is represented with format `event:relativepath`. Possible events: `a
 **Output only relative paths on each change**
 
 ```bash
-$ chokidar '**/*.js' '**/*.less' | cut -d ':' -f 2-
+$ chokidar "**/*.js" "**/*.less" | cut -d ":" -f 2-
 test/dir/a.js
 test/dir/a.less
 test/b.js
@@ -74,15 +74,15 @@ test/b.js
 
 **Run *npm run build-js* whenever any .js file changes in the current work directory tree**
 
-```chokidar '**/*.js' -c 'npm run build-js'```
+```chokidar "**/*.js" -c "npm run build-js"```
 
 **Watching in network directories must use polling**
 
-```chokidar '**/*.less' -c 'npm run build-less' --polling```
+```chokidar "**/*.less" -c "npm run build-less" --polling```
 
 **Pass the path and event details in to your custom command**
 
-```chokidar '**/*.less' -c 'if [ "{event}" = "change" ]; then npm run build-less -- {path}; fi;'```
+```chokidar "**/*.less" -c "if [ '{event}' = 'change' ]; then npm run build-less -- {path}; fi;"```
 
 **Detailed help**
 
