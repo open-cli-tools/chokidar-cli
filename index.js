@@ -3,7 +3,7 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
 var chokidar = require('chokidar');
-var spawn = require('npm-run-all/lib/spawn');
+var spawn = require('npm-run-all/lib/spawn').default;
 
 var EVENT_DESCRIPTIONS = {
     add: 'File added',
