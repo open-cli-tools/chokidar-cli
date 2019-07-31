@@ -31,7 +31,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "3.5.5",
-    "chokidar": "2.1.5",
+    "chokidar": "3.0.2",
     "lodash": "4.17.15",
     "yargs": "13.3.0"
   },
@@ -40,5 +40,8 @@
   },
   "scripts": {
     "test": "mocha"
+  },
+  "engines": {
+    "node": ">= 8"
   }
 }

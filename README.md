@@ -19,6 +19,10 @@ The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar
 > and [many others](https://www.npmjs.org/browse/depended/chokidar/).
 > It has proven itself in production environments.
 
+## Pre-requisites
+
+- Node.js v8.0.0 or newer
+
 ## Install
 
 If you need it only with NPM scripts:
