@@ -106,10 +106,24 @@ Options:
                           Instances of `{path}` or `{event}` within the command
                           will be replaced by the corresponding values from the
                           chokidar event.
-  -d, --debounce          Debounce timeout in ms for executing command
-                                                                  [default: 400]
-  -t, --throttle          Throttle timeout in ms for executing command
-                                                                  [default: 0]
+  -d, --debounce          Delays command execution until after specified ms have
+                          elapsed since the last time the debounced command was
+                          executed                                [default: 400]
+  --debounce-leading      Specify executing on the leading edge of the timeout
+                                                      [boolean] [default: false]
+  --debounce-max-wait     The maximum time command is allowed to be delayed
+                          before it is executed
+  --debounce-trailing     Specify executing on the trailing edge of the timeout
+                                                       [boolean] [default: true]
+  -t, --throttle          Only execute command at most once per every specified
+                          ms. Note: If leading and trailing options are true,
+                          command is executed on the trailing edge of the
+                          timeout only if the the throttled command is invoked
+                          more than once during the timeout         [default: 0]
+  --throttle-leading      Specify executing on the leading edge of the timeout
+                                                       [boolean] [default: true]
+  --throttle-trailing     Specify executing on the trailing edge of the timeout
+                                                       [boolean] [default: true]
   -s, --follow-symlinks   When not set, only the symlinks themselves will be
                           watched for changes instead of following the link
                           references and bubbling events through the links path
@@ -125,10 +139,10 @@ Options:
                           of fs.watch. This might lead to high CPU utilization.
                           It is typically necessary to set this to true to
                           successfully watch files over a network, and it may be
-                          necessary to successfully watch files in other non-
-                          standard situations         [boolean] [default: false]
-  --poll-interval         Interval of file system polling. Effective when --
-                          polling is set                          [default: 100]
+                          necessary to successfully watch files in other
+                          non-standard situations     [boolean] [default: false]
+  --poll-interval         Interval of file system polling. Effective when
+                          --polling is set                        [default: 100]
   --poll-interval-binary  Interval of file system polling for binary files.
                           Effective when --polling is set         [default: 300]
   --verbose               When set, output is more verbose and human readable.

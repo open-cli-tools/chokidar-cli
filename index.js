@@ -14,7 +14,12 @@ var EVENT_DESCRIPTIONS = {
 
 var defaultOpts = {
     debounce: 400,
+    debounceLeading: false,
+    debounceMaxWait: undefined,
+    debounceTrailing: true,
     throttle: 0,
+    throttleLeading: true,
+    throttleTrailing: true,
     followSymlinks: false,
     ignore: null,
     polling: false,
@@ -52,14 +57,43 @@ var argv = require('yargs')
     .option('d', {
         alias: 'debounce',
         default: defaultOpts.debounce,
-        describe: 'Debounce timeout in ms for executing command',
+        describe: 'Delays command execution until after specified ms have ' +
+                  'elapsed since the last time the debounced command was executed',
         type: 'number'
+    })
+    .option('debounce-leading', {
+        default: defaultOpts.debounceLeading,
+        describe: 'Specify executing on the leading edge of the timeout',
+        type: 'boolean'
+    })
+    .option('debounce-max-wait', {
+        default: defaultOpts.debounceMaxWait,
+        describe: 'The maximum time command is allowed to be delayed before it is executed',
+        type: 'number'
+    })
+    .option('debounce-trailing', {
+        default: defaultOpts.debounceTrailing,
+        describe: 'Specify executing on the trailing edge of the timeout',
+        type: 'boolean'
     })
     .option('t', {
         alias: 'throttle',
         default: defaultOpts.throttle,
-        describe: 'Throttle timeout in ms for executing command',
+        describe: 'Only execute command at most once per every specified ms. ' +
+                  'Note: If leading and trailing options are true, command is ' +
+                  'executed on the trailing edge of the timeout only if the the ' +
+                  'throttled command is invoked more than once during the timeout',
         type: 'number'
+    })
+    .option('throttle-leading', {
+        default: defaultOpts.throttleLeading,
+        describe: 'Specify executing on the leading edge of the timeout',
+        type: 'boolean'
+    })
+    .option('throttle-trailing', {
+        default: defaultOpts.throttleTrailing,
+        describe: 'Specify executing on the trailing edge of the timeout',
+        type: 'boolean'
     })
     .option('s', {
         alias: 'follow-symlinks',
@@ -137,8 +171,14 @@ function startWatching(opts) {
     var chokidarOpts = createChokidarOpts(opts);
     var watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
-    var throttledRun = _.throttle(run, opts.throttle);
-    var debouncedRun = _.debounce(throttledRun, opts.debounce);
+    var throttledRun = _.throttle(run, opts.throttle, {
+        leading: opts.throttleLeading,
+        trailing: opts.throttleTrailing
+    });
+
+    var debounceOpts = createDebounceOpts(opts);
+    var debouncedRun = _.debounce(throttledRun, opts.debounce, debounceOpts);
+
     watcher.on('all', function(event, path) {
         var description = EVENT_DESCRIPTIONS[event] + ':';
 
@@ -187,6 +227,17 @@ function createChokidarOpts(opts) {
     if (opts.ignore) chokidarOpts.ignored = opts.ignore;
 
     return chokidarOpts;
+}
+
+function createDebounceOpts(opts) {
+    var debounceOpts = {
+        leading: opts.debounceLeading,
+        trailing: opts.debounceTrailing
+    };
+
+    if (opts.debounceMaxWait) debounceOpts.maxWait = opts.debounceMaxWait;
+
+    return debounceOpts;
 }
 
 // Takes string or array of strings
