@@ -1,26 +1,25 @@
 // Test basic usage of cli. Contains confusing setTimeouts
 
-var fs = require('fs');
-var path = require('path');
-var exec = require('child_process').exec;
-var assert = require('assert');
-var utils = require('../utils');
-var run = utils.run;
+const fs = require('fs');
+const path = require('path');
+const assert = require('assert');
+const utils = require('../utils');
+const {run} = utils;
 
 // If true, output of commands are shown
-var DEBUG_TESTS = false;
+const DEBUG_TESTS = false;
 
 // Arbitrary file which is created on detected changes
 // Used to determine that file changes were actually detected.
-var CHANGE_FILE = 'dir/change';
+const CHANGE_FILE = 'dir/change';
 
 // Time to wait for different tasks
-var TIMEOUT_WATCH_READY = 1000;
-var TIMEOUT_CHANGE_DETECTED = 700;
-var TIMEOUT_KILL = TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000;
+const TIMEOUT_WATCH_READY = 1000;
+const TIMEOUT_CHANGE_DETECTED = 700;
+const TIMEOUT_KILL = TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000;
 
 // Abs path to test directory
-var testDir = path.resolve(__dirname);
+const testDir = path.resolve(__dirname);
 process.chdir(path.join(testDir, '..'));
 
 describe('chokidar-cli', function() {
@@ -33,43 +32,43 @@ describe('chokidar-cli', function() {
 
         // Clear all changes in the test directory
         run('git checkout HEAD dir', {cwd: testDir})
-        .then(function() {
-            done();
-        });
-    })
+            .then(() => {
+                done();
+            });
+    });
 
-    it('help should be succesful', function(done) {
+    it('help should be succesful', done => {
         run('node index.js --help', {pipe: DEBUG_TESTS})
-        .then(function(exitCode) {
-            // exit code 0 means success
-            assert.strictEqual(exitCode, 0);
-            done();
-        });
+            .then(exitCode => {
+                // exit code 0 means success
+                assert.strictEqual(exitCode, 0);
+                done();
+            });
     });
 
-    it('version should be successful', function(done) {
+    it('version should be successful', done => {
         run('node index.js -v', {pipe: DEBUG_TESTS})
-        .then(function(exitCode) {
-            // exit code 0 means success
-            assert.strictEqual(exitCode, 0);
-            done();
-        });
+            .then(exitCode => {
+                // exit code 0 means success
+                assert.strictEqual(exitCode, 0);
+                done();
+            });
     });
 
-    it('**/*.less should detect all less files in dir tree', function(done) {
-        var killed = false;
+    it('**/*.less should detect all less files in dir tree', done => {
+        let killed = false;
 
         // Use a file to detect that trigger command is actually run
-        var touch = 'touch ' + CHANGE_FILE;
+        const touch = `touch ${CHANGE_FILE}`;
 
         // No quotes needed in glob pattern because node process spawn
         // does no globbing
         // TODO: touch command does not always create file before assertion
-        run('node ../index.js "dir/**/*.less" -c "' + touch + '"', {
+        run(`node ../index.js "dir/**/*.less" -c "${touch}"`, {
             pipe: DEBUG_TESTS,
             cwd: './test',
             // Called after process is spawned
-            callback: function(child) {
+            callback(child) {
                 setTimeout(function killChild() {
                     // Kill child after test case
                     child.kill();
@@ -77,41 +76,41 @@ describe('chokidar-cli', function() {
                 }, TIMEOUT_KILL);
             }
         })
-        .then(function childProcessExited(exitCode) {
-            // Process should be killed after a timeout,
-            // test if the process died unexpectedly before it
-            assert(killed, 'process exited too quickly');
-            done();
-        });
+            .then(function childProcessExited() {
+                // Process should be killed after a timeout,
+                // test if the process died unexpectedly before it
+                assert(killed, 'process exited too quickly');
+                done();
+            });
 
         setTimeout(function afterWatchIsReady() {
             fs.writeFileSync(resolve('dir/subdir/c.less'), 'content');
 
-            setTimeout(function() {
-                assert(changeFileExists(), 'change file should exist')
-            }, TIMEOUT_CHANGE_DETECTED)
+            setTimeout(() => {
+                assert(changeFileExists(), 'change file should exist');
+            }, TIMEOUT_CHANGE_DETECTED);
         }, TIMEOUT_WATCH_READY);
     });
 
-    it('should replace {path} and {event} in command', function(done) {
-        var command = "echo '{event}:{path}' > " + CHANGE_FILE;
+    it('should replace {path} and {event} in command', done => {
+        const command = `echo '{event}:{path}' > ${CHANGE_FILE}`;
 
-        setTimeout(function() {
-          fs.writeFileSync(resolve('dir/a.js'), 'content');
+        setTimeout(() => {
+            fs.writeFileSync(resolve('dir/a.js'), 'content');
         }, TIMEOUT_WATCH_READY);
 
-        run('node ../index.js "dir/a.js" -c "' + command + '"', {
+        run(`node ../index.js "dir/a.js" -c "${command}"`, {
             pipe: DEBUG_TESTS,
             cwd: './test',
-            callback: function(child) {
+            callback(child) {
                 setTimeout(child.kill.bind(child), TIMEOUT_KILL);
             }
         })
-        .then(function() {
-            var res = fs.readFileSync(resolve(CHANGE_FILE)).toString().trim();
-            assert.equal(res, 'change:dir/a.js', 'need event/path detail');
-            done()
-        });
+            .then(() => {
+                const res = fs.readFileSync(resolve(CHANGE_FILE)).toString().trim();
+                assert.strictEqual(res, 'change:dir/a.js', 'need event/path detail');
+                done();
+            });
     });
 });
 
