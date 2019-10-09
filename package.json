@@ -31,7 +31,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "3.5.5",
-    "chokidar": "3.0.2",
+    "chokidar": "^3.2.1",
     "lodash": "4.17.15",
     "yargs": "13.3.0"
   },
