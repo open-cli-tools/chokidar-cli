@@ -1,6 +1,4 @@
 const {spawn} = require('child_process');
-const _ = require('lodash');
-const Promise = require('bluebird');
 
 // Try to resolve path to shell.
 // We assume that Windows provides COMSPEC env variable
@@ -16,7 +14,7 @@ function run(cmd, opts) {
         throw new Error('$SHELL environment variable is not set.');
     }
 
-    opts = _.merge({
+    opts = Object.assign({
         pipe: true,
         cwd: undefined,
         callback(child) {
