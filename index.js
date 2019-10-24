@@ -199,7 +199,7 @@ function _resolveIgnoreOpt(ignoreOpt) {
 
     const ignores = !Array.isArray(ignoreOpt) ? [ignoreOpt] : ignoreOpt;
 
-    return _.map(ignores, ignore => {
+    return ignores.map(ignore => {
         const isRegex = ignore[0] === '/' && ignore[ignore.length - 1] === '/';
         if (isRegex) {
             // Convert user input to regex object
