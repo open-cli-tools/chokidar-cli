@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
-var _ = require('lodash');
-var chokidar = require('chokidar');
-var utils = require('./utils');
+const _ = require('lodash');
+const chokidar = require('chokidar');
+const yargs = require('yargs');
+const { version } = require('./package.json');
+const { version: chokidarVersion } = require('chokidar/package.json');
+const utils = require('./utils');
 
-var EVENT_DESCRIPTIONS = {
+const EVENT_DESCRIPTIONS = {
     add: 'File added',
     addDir: 'Directory added',
     unlink: 'File removed',
@@ -12,7 +15,7 @@ var EVENT_DESCRIPTIONS = {
     change: 'File changed'
 };
 
-var defaultOpts = {
+const defaultOpts = {
     debounce: 400,
     throttle: 0,
     followSymlinks: false,
@@ -26,10 +29,9 @@ var defaultOpts = {
     command: null
 };
 
-var VERSION = 'chokidar-cli: ' + require('./package.json').version +
-              '\nchokidar: ' + require('chokidar/package').version;
+const VERSION = `chokidar-cli: ${version}\nchokidar: ${chokidarVersion}`;
 
-var argv = require('yargs')
+const {argv} = yargs
     .usage(
         'Usage: chokidar <pattern> [<pattern>...] [options]\n\n' +
         '<pattern>:\n' +
@@ -117,13 +119,11 @@ var argv = require('yargs')
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')
-    .version(VERSION)
-    .argv;
-
+    .version(VERSION);
 
 function main() {
-    var userOpts = getUserOpts(argv);
-    var opts = _.merge(defaultOpts, userOpts);
+    const userOpts = getUserOpts(argv);
+    const opts = _.merge(defaultOpts, userOpts);
     startWatching(opts);
 }
 
@@ -134,20 +134,18 @@ function getUserOpts(argv) {
 
 // Estimates spent working hours based on commit dates
 function startWatching(opts) {
-    var chokidarOpts = createChokidarOpts(opts);
-    var watcher = chokidar.watch(opts.patterns, chokidarOpts);
+    const chokidarOpts = createChokidarOpts(opts);
+    const watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
-    var throttledRun = _.throttle(run, opts.throttle);
-    var debouncedRun = _.debounce(throttledRun, opts.debounce);
-    watcher.on('all', function(event, path) {
-        var description = EVENT_DESCRIPTIONS[event] + ':';
+    const throttledRun = _.throttle(run, opts.throttle);
+    const debouncedRun = _.debounce(throttledRun, opts.debounce);
+    watcher.on('all', (event, path) => {
+        const description = `${EVENT_DESCRIPTIONS[event]}:`;
 
         if (opts.verbose) {
             console.error(description, path);
-        } else {
-            if (!opts.silent) {
-                console.log(event + ':' + path);
-            }
+        } else if (!opts.silent) {
+            console.log(`${event}:${path}`);
         }
 
         // XXX: commands might be still run concurrently
@@ -160,15 +158,15 @@ function startWatching(opts) {
         }
     });
 
-    watcher.on('error', function(error) {
+    watcher.on('error', error => {
         console.error('Error:', error);
         console.error(error.stack);
     });
 
-    watcher.once('ready', function() {
-        var list = opts.patterns.join('", "');
+    watcher.once('ready', () => {
+        const list = opts.patterns.join('", "');
         if (!opts.silent) {
-            console.error('Watching', '"' + list + '" ..');
+            console.error('Watching', `"${list}" ..`);
         }
     });
 }
@@ -177,14 +175,17 @@ function createChokidarOpts(opts) {
     // Transform e.g. regex ignores to real regex objects
     opts.ignore = _resolveIgnoreOpt(opts.ignore);
 
-    var chokidarOpts = {
+    const chokidarOpts = {
         followSymlinks: opts.followSymlinks,
         usePolling: opts.polling,
         interval: opts.pollInterval,
         binaryInterval: opts.pollIntervalBinary,
         ignoreInitial: !opts.initial
     };
-    if (opts.ignore) chokidarOpts.ignored = opts.ignore;
+
+    if (opts.ignore) {
+        chokidarOpts.ignored = opts.ignore;
+    }
 
     return chokidarOpts;
 }
@@ -195,13 +196,13 @@ function _resolveIgnoreOpt(ignoreOpt) {
         return ignoreOpt;
     }
 
-    var ignores = !_.isArray(ignoreOpt) ? [ignoreOpt] : ignoreOpt;
+    const ignores = !Array.isArray(ignoreOpt) ? [ignoreOpt] : ignoreOpt;
 
-    return _.map(ignores, function(ignore) {
-        var isRegex = ignore[0] === '/' && ignore[ignore.length - 1] === '/';
+    return _.map(ignores, ignore => {
+        const isRegex = ignore[0] === '/' && ignore[ignore.length - 1] === '/';
         if (isRegex) {
             // Convert user input to regex object
-            var match = ignore.match(new RegExp('^/(.*)/(.*?)$'));
+            const match = ignore.match(new RegExp('^/(.*)/(.*?)$'));
             return new RegExp(match[1], match[2]);
         }
 
@@ -211,10 +212,10 @@ function _resolveIgnoreOpt(ignoreOpt) {
 
 function run(cmd) {
     return utils.run(cmd)
-    .catch(function(err) {
-        console.error('Error when executing', cmd);
-        console.error(err.stack);
-    });
+        .catch(error => {
+            console.error('Error when executing', cmd);
+            console.error(error.stack);
+        });
 }
 
 main();

@@ -1,12 +1,12 @@
-var childProcess = require('child_process');
-var _ = require('lodash');
-var Promise = require('bluebird');
+const {spawn} = require('child_process');
+const _ = require('lodash');
+const Promise = require('bluebird');
 
 // Try to resolve path to shell.
 // We assume that Windows provides COMSPEC env variable
 // and other platforms provide SHELL env variable
-var SHELL_PATH = process.env.SHELL || process.env.COMSPEC;
-var EXECUTE_OPTION = process.env.COMSPEC !== undefined && process.env.SHELL === undefined ? '/c' : '-c';
+const SHELL_PATH = process.env.SHELL || process.env.COMSPEC;
+const EXECUTE_OPTION = process.env.COMSPEC !== undefined && process.env.SHELL === undefined ? '/c' : '-c';
 
 // XXX: Wrapping tos to a promise is a bit wrong abstraction. Maybe RX suits
 // better?
@@ -19,7 +19,7 @@ function run(cmd, opts) {
     opts = _.merge({
         pipe: true,
         cwd: undefined,
-        callback: function(child) {
+        callback(child) {
             // Since we return promise, we need to provide
             // this callback if one wants to access the child
             // process reference
@@ -28,16 +28,16 @@ function run(cmd, opts) {
         }
     }, opts);
 
-    return new Promise(function(resolve, reject) {
-        var child;
+    return new Promise((resolve, reject) => {
+        let child;
 
         try {
-            child = childProcess.spawn(SHELL_PATH, [EXECUTE_OPTION, cmd], {
+            child = spawn(SHELL_PATH, [EXECUTE_OPTION, cmd], {
                 cwd: opts.cwd,
                 stdio: opts.pipe ? 'inherit' : null
             });
-        } catch (e) {
-            return Promise.reject(e);
+        } catch (error) {
+            return Promise.reject(error);
         }
 
         opts.callback(child);
@@ -58,5 +58,5 @@ function run(cmd, opts) {
 }
 
 module.exports = {
-    run: run
+    run
 };
