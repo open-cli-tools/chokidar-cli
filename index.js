@@ -123,7 +123,7 @@ const {argv} = yargs
 
 function main() {
     const userOpts = getUserOpts(argv);
-    const opts = _.merge(defaultOpts, userOpts);
+    const opts = Object.assign(defaultOpts, userOpts);
     startWatching(opts);
 }
 
