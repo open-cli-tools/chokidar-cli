@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const _ = require('lodash');
+const throttle = require('lodash.throttle');
+const debounce = require('lodash.debounce');
 const chokidar = require('chokidar');
 const yargs = require('yargs');
 const { version } = require('./package.json');
@@ -137,8 +138,8 @@ function startWatching(opts) {
     const chokidarOpts = createChokidarOpts(opts);
     const watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
-    const throttledRun = _.throttle(run, opts.throttle);
-    const debouncedRun = _.debounce(throttledRun, opts.debounce);
+    const throttledRun = throttle(run, opts.throttle);
+    const debouncedRun = debounce(throttledRun, opts.debounce);
     watcher.on('all', (event, path) => {
         const description = `${EVENT_DESCRIPTIONS[event]}:`;
 
