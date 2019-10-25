@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
+'use strict';
+
 const throttle = require('lodash.throttle');
 const debounce = require('lodash.debounce');
 const chokidar = require('chokidar');
 const yargs = require('yargs');
-const { version } = require('./package.json');
 const { version: chokidarVersion } = require('chokidar/package.json');
+const { version } = require('./package.json');
 const utils = require('./utils');
 
 const EVENT_DESCRIPTIONS = {
