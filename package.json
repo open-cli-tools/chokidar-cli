@@ -42,7 +42,7 @@
     "test": "mocha"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">=8.10.0"
   },
   "files": [
     "*.js"
