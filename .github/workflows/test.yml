@@ -32,3 +32,5 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          SHELL: "/bin/bash"
