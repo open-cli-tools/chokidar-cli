@@ -1,5 +1,7 @@
 // Test basic usage of cli. Contains confusing setTimeouts
 
+/* eslint-env mocha */
+
 'use strict';
 
 const fs = require('fs');
