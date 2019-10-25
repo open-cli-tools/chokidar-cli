@@ -1,3 +1,5 @@
+'use strict';
+
 const {spawn} = require('child_process');
 
 // Try to resolve path to shell.
@@ -14,7 +16,7 @@ function run(cmd, opts) {
         throw new Error('$SHELL environment variable is not set.');
     }
 
-    opts = Object.assign({
+    opts = {
         pipe: true,
         cwd: undefined,
         callback(child) {
@@ -23,8 +25,7 @@ function run(cmd, opts) {
             // process reference
             // Called immediately after successful child process
             // spawn
-        }
-    }, opts);
+        }, ...opts};
 
     return new Promise((resolve, reject) => {
         let child;

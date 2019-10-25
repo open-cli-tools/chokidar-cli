@@ -1,10 +1,11 @@
 // Test basic usage of cli. Contains confusing setTimeouts
 
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
-const utils = require('../utils');
-const {run} = utils;
+const {run} = require('../utils');
 
 // If true, output of commands are shown
 const DEBUG_TESTS = false;
