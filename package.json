@@ -36,7 +36,7 @@
     "yargs": "^13.3.0"
   },
   "devDependencies": {
-    "mocha": "^6.2.1"
+    "mocha": "^6.2.2"
   },
   "scripts": {
     "test": "mocha"
