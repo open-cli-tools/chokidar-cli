@@ -1,6 +1,6 @@
 # Chokidar CLI
 
-[![Build Status](https://travis-ci.org/kimmobrunfeldt/chokidar-cli.svg?branch=master)](https://travis-ci.org/kimmobrunfeldt/chokidar-cli)
+[![Build Status](https://github.com/kimmobrunfeldt/chokidar-cli/workflows/Tests/badge.svg)](https://github.com/kimmobrunfeldt/chokidar-cli/actions?workflow=Tests)
 
 Fast cross-platform command line utility to watch file system changes.
 
