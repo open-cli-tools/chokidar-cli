@@ -19,7 +19,7 @@ function run(cmd, opts) {
     opts = {
         pipe: true,
         cwd: undefined,
-        callback(child) {
+        callback(child) { // eslint-disable-line no-unused-vars
             // Since we return promise, we need to provide
             // this callback if one wants to access the child
             // process reference
@@ -36,7 +36,7 @@ function run(cmd, opts) {
                 stdio: opts.pipe ? 'inherit' : null
             });
         } catch (error) {
-            return Promise.reject(error);
+            return reject(error);
         }
 
         opts.callback(child);
