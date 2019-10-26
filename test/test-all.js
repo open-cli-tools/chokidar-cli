@@ -12,10 +12,6 @@ const {run} = require('../utils');
 // If true, output of commands are shown
 const DEBUG_TESTS = false;
 
-// Arbitrary file which is created on detected changes
-// Used to determine that file changes were actually detected.
-const CHANGE_FILE = 'dir/change';
-
 // Time to wait for different tasks
 const TIMEOUT_WATCH_READY = 1000;
 const TIMEOUT_CHANGE_DETECTED = 700;
@@ -25,9 +21,19 @@ const TIMEOUT_KILL = TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000;
 const testDir = path.resolve(__dirname);
 process.chdir(path.join(testDir, '..'));
 
-describe('chokidar-cli', function() {
-    this.timeout(5000);
+// Arbitrary file which is created on detected changes
+// Used to determine that file changes were actually detected.
+const CHANGE_FILE = 'dir/change';
 
+function resolve(relativePath) {
+    return path.join(testDir, relativePath);
+}
+
+function changeFileExists() {
+    return fs.existsSync(resolve(CHANGE_FILE));
+}
+
+describe('chokidar-cli', () => {
     afterEach(function clean(done) {
         if (changeFileExists()) {
             fs.unlinkSync(resolve(CHANGE_FILE));
@@ -37,6 +43,9 @@ describe('chokidar-cli', function() {
         run('git checkout HEAD dir', {cwd: testDir})
             .then(() => {
                 done();
+            })
+            .catch(error => {
+                return done(error);
             });
     });
 
@@ -46,6 +55,9 @@ describe('chokidar-cli', function() {
                 // exit code 0 means success
                 assert.strictEqual(exitCode, 0);
                 done();
+            })
+            .catch(error => {
+                return done(error);
             });
     });
 
@@ -55,6 +67,9 @@ describe('chokidar-cli', function() {
                 // exit code 0 means success
                 assert.strictEqual(exitCode, 0);
                 done();
+            })
+            .catch(error => {
+                return done(error);
             });
     });
 
@@ -69,7 +84,7 @@ describe('chokidar-cli', function() {
         // TODO: touch command does not always create file before assertion
         run(`node ../index.js "dir/**/*.less" -c "${touch}"`, {
             pipe: DEBUG_TESTS,
-            cwd: './test',
+            cwd: path.normalize('./test'),
             // Called after process is spawned
             callback(child) {
                 setTimeout(function killChild() {
@@ -84,6 +99,9 @@ describe('chokidar-cli', function() {
                 // test if the process died unexpectedly before it
                 assert(killed, 'process exited too quickly');
                 done();
+            })
+            .catch(error => {
+                return done(error);
             });
 
         setTimeout(function afterWatchIsReady() {
@@ -96,31 +114,26 @@ describe('chokidar-cli', function() {
     });
 
     it('should replace {path} and {event} in command', done => {
-        const command = `echo '{event}:{path}' > ${CHANGE_FILE}`;
+        const command = `echo "{event}:{path}" > ${CHANGE_FILE}`;
 
         setTimeout(() => {
             fs.writeFileSync(resolve('dir/a.js'), 'content');
         }, TIMEOUT_WATCH_READY);
 
-        run(`node ../index.js "dir/a.js" -c "${command}"`, {
+        run(`node ../index.js "${path.normalize('dir/a.js')}" -c "${command}"`, {
             pipe: DEBUG_TESTS,
-            cwd: './test',
+            cwd: path.normalize('./test'),
             callback(child) {
                 setTimeout(child.kill.bind(child), TIMEOUT_KILL);
             }
         })
             .then(() => {
                 const res = fs.readFileSync(resolve(CHANGE_FILE)).toString().trim();
-                assert.strictEqual(res, 'change:dir/a.js', 'need event/path detail');
+                assert.strictEqual(res, `change:${path.normalize('dir/a.js')}`, 'need event/path detail');
                 done();
+            })
+            .catch(error => {
+                return done(error);
             });
     });
 });
-
-function resolve(relativePath) {
-    return path.join(testDir, relativePath);
-}
-
-function changeFileExists() {
-    return fs.existsSync(resolve(CHANGE_FILE));
-}
