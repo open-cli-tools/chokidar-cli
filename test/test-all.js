@@ -10,7 +10,7 @@ const assert = require('assert');
 const {run} = require('../utils');
 
 // If true, output of commands are shown
-const DEBUG_TESTS = false;
+const DEBUG_TESTS = true;
 
 // Time to wait for different tasks
 const TIMEOUT_WATCH_READY = 1000;

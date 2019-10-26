@@ -2,20 +2,9 @@
 
 const {spawn} = require('child_process');
 
-// Try to resolve path to shell.
-// We assume that Windows provides COMSPEC env variable
-// and other platforms provide SHELL env variable
-const SHELL_PATH = process.env.SHELL || process.env.COMSPEC;
-const EXECUTE_OPTION = process.env.COMSPEC !== undefined && process.env.SHELL === undefined ? '/c' : '-c';
-
 // XXX: Wrapping tos to a promise is a bit wrong abstraction. Maybe RX suits
 // better?
 function run(cmd, opts) {
-    if (!SHELL_PATH) {
-        // If we cannot resolve shell, better to just crash
-        throw new Error('$SHELL environment variable is not set.');
-    }
-
     opts = {
         pipe: true,
         cwd: undefined,
@@ -31,8 +20,9 @@ function run(cmd, opts) {
         let child;
 
         try {
-            child = spawn(SHELL_PATH, [EXECUTE_OPTION, cmd], {
+            child = spawn(cmd, {
                 cwd: opts.cwd,
+                shell: true,
                 stdio: opts.pipe ? 'inherit' : null
             });
         } catch (error) {
