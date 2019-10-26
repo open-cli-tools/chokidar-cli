@@ -199,13 +199,13 @@ function _resolveIgnoreOpt(ignoreOpt) {
         return ignoreOpt;
     }
 
-    const ignores = !Array.isArray(ignoreOpt) ? [ignoreOpt] : ignoreOpt;
+    const ignores = Array.isArray(ignoreOpt) ? ignoreOpt : [ignoreOpt];
 
     return ignores.map(ignore => {
         const isRegex = ignore[0] === '/' && ignore[ignore.length - 1] === '/';
         if (isRegex) {
             // Convert user input to regex object
-            const match = ignore.match(new RegExp('^/(.*)/(.*?)$'));
+            const match = ignore.match(/^\/(.*)\/(.*?)$/);
             return new RegExp(match[1], match[2]);
         }
 
