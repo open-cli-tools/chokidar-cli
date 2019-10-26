@@ -19,13 +19,13 @@ The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar
 > and [many others](https://www.npmjs.org/browse/depended/chokidar/).
 > It has proven itself in production environments.
 
-## Pre-requisites
+## Prerequisites
 
-- Node.js v8.0.0 or newer
+- Node.js v8.10.0 or newer
 
 ## Install
 
-If you need it only with NPM scripts:
+If you need it only with npm scripts:
 
 ```bash
 npm install chokidar-cli
@@ -45,10 +45,9 @@ Arguments use the form of runtime flags with string parameters, delimited by quo
 
 This is particularly important when using chokidar-cli for run scripts specified in `package.json`. For maximum platform compatibility, make sure to use escaped double quotes around chokidar's parameters:
 
-```
+```json
 "run": {
-  "chokidar": "chokidar \"**/*.js\" -c \"...\"",
-  ...
+  "chokidar": "chokidar \"**/*.js\" -c \"...\""
 },
 ```
 
@@ -117,7 +116,7 @@ Options:
   -i, --ignore            Pattern for files which should be ignored. Needs to be
                           surrounded with quotes to prevent shell globbing. The
                           whole relative or absolute path is tested, not just
-                          filename. Supports glob patters or regexes using
+                          filename. Supports glob patterns or regexes using
                           format: /yourmatch/i
   --initial               When set, command is initially run once
                                                       [boolean] [default: false]
