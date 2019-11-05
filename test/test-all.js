@@ -95,6 +95,45 @@ describe('chokidar-cli', function() {
         }, TIMEOUT_WATCH_READY);
     });
 
+
+    it('should run command for each simultaneous change, if not debounced or throttled', done => {
+        let killed = false;
+
+        // I hope it's safe to use the pipe and tee here. It should work
+        // on any unix-y system.
+        const logChanges = `echo {path} | tee -a ${CHANGE_FILE}`;
+
+        // Run watcher
+        run(`node ../index.js "dir/**/*.js" -d 0 -c "${logChanges}"`, {
+            pipe: DEBUG_TESTS,
+            cwd: './test',
+            // Called after process is spawned
+            callback(child) {
+                setTimeout(function killChild() {
+                    // Kill child after test case
+                    child.kill();
+                    killed = true;
+                }, TIMEOUT_KILL);
+            }
+        })
+            .then(function childProcessExited() {
+                // Process should be killed after a timeout,
+                // test if the process died unexpectedly before it
+                assert(killed, 'process exited too quickly');
+                done();
+            });
+
+        setTimeout(() => {
+            run('touch dir/a.js dir/b.js', { cwd: './test' })
+                .then(
+                    setTimeout(() => {
+                        assert(changeFileContains('a.js'), 'change file should include a.js');
+                        assert(changeFileContains('b.js'), 'change file should include b.js');
+                    }, TIMEOUT_CHANGE_DETECTED)
+                );
+        }, TIMEOUT_WATCH_READY);
+    });
+
     it('should replace {path} and {event} in command', done => {
         const command = `echo '{event}:{path}' > ${CHANGE_FILE}`;
 
@@ -123,4 +162,8 @@ function resolve(relativePath) {
 
 function changeFileExists() {
     return fs.existsSync(resolve(CHANGE_FILE));
+}
+
+function changeFileContains(pattern) {
+    return fs.readFileSync(resolve(CHANGE_FILE)).toString().match(pattern);
 }
