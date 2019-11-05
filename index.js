@@ -140,8 +140,16 @@ function startWatching(opts) {
     const chokidarOpts = createChokidarOpts(opts);
     const watcher = chokidar.watch(opts.patterns, chokidarOpts);
 
-    const throttledRun = throttle(run, opts.throttle);
-    const debouncedRun = debounce(throttledRun, opts.debounce);
+    let throttledRun = run;
+    if (opts.throttle > 0) {
+        throttledRun = throttle(run, opts.throttle);
+    }
+
+    let debouncedRun = throttledRun;
+    if (opts.debounce > 0) {
+        debouncedRun = debounce(throttledRun, opts.debounce);
+    }
+
     watcher.on('all', (event, path) => {
         const description = `${EVENT_DESCRIPTIONS[event]}:`;
 
