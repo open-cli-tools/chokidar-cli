@@ -1,6 +1,6 @@
 # Chokidar CLI
 
-[![Build Status](https://github.com/open-npm-tools/chokidar-cli/workflows/Tests/badge.svg)](https://github.com/open-npm-tools/chokidar-cli/actions?workflow=Tests)
+[![Build Status](https://github.com/open-cli-tools/chokidar-cli/workflows/Tests/badge.svg)](https://github.com/open-cli-tools/chokidar-cli/actions?workflow=Tests)
 
 Fast cross-platform command line utility to watch file system changes.
 

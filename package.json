@@ -19,14 +19,14 @@
   "bin": {
     "chokidar": "index.js"
   },
-  "homepage": "https://github.com/open-npm-tools/chokidar-cli",
+  "homepage": "https://github.com/open-cli-tools/chokidar-cli",
   "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/open-npm-tools/chokidar-cli.git"
+    "url": "https://github.com/open-cli-tools/chokidar-cli.git"
   },
   "bugs": {
-    "url": "http://github.com/open-npm-tools/chokidar-cli/issues"
+    "url": "http://github.com/open-cli-tools/chokidar-cli/issues"
   },
   "license": "MIT",
   "dependencies": {
