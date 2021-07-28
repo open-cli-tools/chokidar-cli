@@ -30,7 +30,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chokidar": "^3.2.3",
+    "chokidar": "^3.5.2",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "yargs": "^13.3.0"
