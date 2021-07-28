@@ -1,7 +1,7 @@
 {
   "name": "chokidar-cli",
   "description": "Ultra-fast cross-platform command line utility to watch file system changes.",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "keywords": [
     "fs",
     "watch",
@@ -17,7 +17,7 @@
     "bash"
   ],
   "bin": {
-    "chokidar": "./index.js"
+    "chokidar": "index.js"
   },
   "homepage": "https://github.com/open-npm-tools/chokidar-cli",
   "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com>",
