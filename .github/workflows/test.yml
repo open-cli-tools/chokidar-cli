@@ -11,8 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # change `8.16.1` to `8` when https://github.com/actions/setup-node/issues/27 is fixed
-        node: [8.16.1, 10, 12]
+        node: [12, 14, 15]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
