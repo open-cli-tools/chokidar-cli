@@ -19,20 +19,20 @@
   "bin": {
     "chokidar": "./index.js"
   },
-  "homepage": "https://github.com/kimmobrunfeldt/chokidar-cli",
-  "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com> (http://kimmobrunfeldt.github.io/)",
+  "homepage": "https://github.com/open-npm-tools/chokidar-cli",
+  "author": "Kimmo Brunfeldt <kimmobrunfeldt@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kimmobrunfeldt/chokidar-cli.git"
+    "url": "https://github.com/open-npm-tools/chokidar-cli.git"
   },
   "bugs": {
-    "url": "http://github.com/kimmobrunfeldt/chokidar-cli/issues"
+    "url": "http://github.com/open-npm-tools/chokidar-cli/issues"
   },
   "license": "MIT",
   "dependencies": {
     "chokidar": "^3.2.3",
-    "lodash.throttle": "^4.1.1",
     "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "yargs": "^13.3.0"
   },
   "devDependencies": {
