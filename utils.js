@@ -6,7 +6,7 @@ const {spawn} = require('child_process');
 // We assume that Windows provides COMSPEC env variable
 // and other platforms provide SHELL env variable
 const SHELL_PATH = process.env.SHELL || process.env.COMSPEC;
-const EXECUTE_OPTION = process.env.COMSPEC !== undefined && process.env.SHELL === undefined ? '/c' : '-c';
+const EXECUTE_OPTION = process.env.COMSPEC !== undefined && !process.env.SHELL ? '/c' : '-c';
 
 // XXX: Wrapping tos to a promise is a bit wrong abstraction. Maybe RX suits
 // better?
