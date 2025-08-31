@@ -21,7 +21,7 @@ The underlying watch library is [Chokidar](https://github.com/paulmillr/chokidar
 
 ## Prerequisites
 
-- Node.js v8.10.0 or newer
+- Node.js v20.0.0 or newer
 
 ## Install
 
