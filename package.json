@@ -45,7 +45,7 @@
     "test": "npm run lint && npm run mocha"
   },
   "engines": {
-    "node": ">= 8.10.0"
+    "node": ">= 20.0.0"
   },
   "files": [
     "*.js"
