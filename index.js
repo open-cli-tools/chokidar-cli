@@ -6,6 +6,7 @@ const throttle = require('lodash.throttle');
 const debounce = require('lodash.debounce');
 const chokidar = require('chokidar');
 const yargs = require('yargs');
+const { hideBin } = require('yargs/helpers');
 const { version: chokidarVersion } = require('chokidar/package.json');
 const { version } = require('./package.json');
 const utils = require('./utils');
@@ -34,7 +35,7 @@ const defaultOpts = {
 
 const VERSION = `chokidar-cli: ${version}\nchokidar: ${chokidarVersion}`;
 
-const {argv} = yargs
+const {argv} = yargs(hideBin(process.argv))
     .usage(
         'Usage: chokidar <pattern> [<pattern>...] [options]\n\n' +
         '<pattern>:\n' +
