@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "eslint": "^8.57.1",
-    "mocha": "^6.2.2"
+    "mocha": "^11.7.2"
   },
   "scripts": {
     "lint": "eslint --report-unused-disable-directives --ignore-path .gitignore .",

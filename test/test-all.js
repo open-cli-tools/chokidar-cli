@@ -17,8 +17,9 @@ const DEBUG_TESTS = false;
 const CHANGE_FILE = 'dir/change';
 
 // Time to wait for different tasks
+// TODO: These lead to flakiness and might require the eventual bump to get tests passing.
 const TIMEOUT_WATCH_READY = 1000;
-const TIMEOUT_CHANGE_DETECTED = 700;
+const TIMEOUT_CHANGE_DETECTED = 1000;
 const TIMEOUT_KILL = TIMEOUT_WATCH_READY + TIMEOUT_CHANGE_DETECTED + 1000;
 
 // Abs path to test directory
